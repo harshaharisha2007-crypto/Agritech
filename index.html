@@ -84,8 +84,8 @@
       top: 0px !important;
     }
 
-    /* Hide default Google Translate toolbar */
-   .goog-te-banner-frame.skiptranslate,
+    /* Hide Google Translate toolbar without breaking initialization */
+    .goog-te-banner-frame.skiptranslate,
     #goog-gt-tt,
     .goog-te-balloon-frame,
     .VIpgJd-ZVi9od-ORHb-OEVmcd {
@@ -119,7 +119,7 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col justify-between transition-colors duration-200">
 
-  <!-- Hidden Google Translate Mount -->
+  <!-- Off-screen Google Translate Mount -->
   <div id="google_translate_element"></div>
 
   <!-- Header -->
@@ -724,6 +724,16 @@
           mobileDropdown.classList.add('hidden');
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Re-trigger translation on newly revealed sections
+        const shortLang = (localStorage.getItem('agritech_lang') || 'en-IN').split('-')[0];
+        if (shortLang !== 'en') {
+          const gtCombo = document.querySelector('.goog-te-combo');
+          if (gtCombo && gtCombo.value !== shortLang) {
+            gtCombo.value = shortLang;
+            gtCombo.dispatchEvent(new Event('change'));
+          }
+        }
       }
 
       navLinks.forEach(link => {
@@ -1671,24 +1681,35 @@
       let currentLang = localStorage.getItem('agritech_lang') || 'en-IN';
       const langSelector = document.getElementById('langSelector');
 
-      function applyLanguage(lang) {
+      function setTranslateCookie(shortLang) {
+        const domain = window.location.hostname;
+        if (shortLang === 'en') {
+          document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
+          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain};`;
+        } else {
+          document.cookie = `googtrans=/en/${shortLang}; path=/;`;
+          document.cookie = `googtrans=/en/${shortLang}; path=/; domain=${domain};`;
+        }
+      }
+
+      function applyLanguage(lang, isUserAction = true) {
         currentLang = VOICE_MESSAGES[lang] ? lang : 'en-IN';
         localStorage.setItem('agritech_lang', currentLang);
         if (langSelector) langSelector.value = currentLang;
 
         const shortLang = currentLang.split('-')[0];
-        document.cookie = `googtrans=/en/${shortLang}; path=/`;
+        setTranslateCookie(shortLang);
 
-        const gtCombo = document.querySelector('.goog-te-combo');
-        if (gtCombo) {
-          gtCombo.value = shortLang;
-          gtCombo.dispatchEvent(new Event('change'));
-        }
+        if (!isUserAction) return;
+
+        // Clean reload guarantees Google Translate translates every page & hidden section
+        window.location.reload();
       }
 
       if (langSelector) {
         langSelector.value = currentLang;
-        langSelector.addEventListener('change', (e) => applyLanguage(e.target.value));
+        langSelector.addEventListener('change', (e) => applyLanguage(e.target.value, true));
       }
 
       function speakText(text) {
@@ -1772,48 +1793,13 @@
 
   <!-- Google Translate Engine -->
   <script>
-   function setTranslateCookie(shortLang) {
-        const domain = window.location.hostname;
-        if (shortLang === 'en') {
-          document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
-          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain};`;
-        } else {
-          document.cookie = `googtrans=/en/${shortLang}; path=/;`;
-          document.cookie = `googtrans=/en/${shortLang}; path=/; domain=${domain};`;
-        }
-      }
-
-      function applyLanguage(lang, isUserAction = true) {
-        currentLang = VOICE_MESSAGES[lang] ? lang : 'en-IN';
-        localStorage.setItem('agritech_lang', currentLang);
-        if (langSelector) langSelector.value = currentLang;
-
-        const shortLang = currentLang.split('-')[0];
-        setTranslateCookie(shortLang);
-
-        if (!isUserAction) return;
-
-        // Switching back to English works cleanest with a quick reload
-        if (shortLang === 'en') {
-          window.location.reload();
-          return;
-        }
-
-        const gtCombo = document.querySelector('.goog-te-combo');
-        if (gtCombo) {
-          gtCombo.value = shortLang;
-          gtCombo.dispatchEvent(new Event('change'));
-        } else {
-          // If Google Translate script is still loading, reload with the cookie set
-          window.location.reload();
-        }
-      }
-    true:
-        if (langSelector) {
-        langSelector.value = currentLang;
-        langSelector.addEventListener('change', (e) => applyLanguage(e.target.value, true));
-      }
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,kn,hi,te,ta,mr',
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
   </script>
   <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
