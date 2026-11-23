@@ -85,12 +85,17 @@
     }
 
     /* Hide default Google Translate toolbar */
-    .goog-te-banner-frame.skiptranslate,
-    .goog-te-gadget-icon,
+   .goog-te-banner-frame.skiptranslate,
     #goog-gt-tt,
     .goog-te-balloon-frame,
-    #google_translate_element {
+    .VIpgJd-ZVi9od-ORHb-OEVmcd {
       display: none !important;
+    }
+    #google_translate_element {
+      position: fixed;
+      top: -9999px;
+      left: -9999px;
+      visibility: hidden;
     }
 
     .page-section {
@@ -1767,13 +1772,48 @@
 
   <!-- Google Translate Engine -->
   <script>
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: 'en,kn,hi,te,ta,mr',
-        autoDisplay: false
-      }, 'google_translate_element');
-    }
+   function setTranslateCookie(shortLang) {
+        const domain = window.location.hostname;
+        if (shortLang === 'en') {
+          document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
+          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain};`;
+        } else {
+          document.cookie = `googtrans=/en/${shortLang}; path=/;`;
+          document.cookie = `googtrans=/en/${shortLang}; path=/; domain=${domain};`;
+        }
+      }
+
+      function applyLanguage(lang, isUserAction = true) {
+        currentLang = VOICE_MESSAGES[lang] ? lang : 'en-IN';
+        localStorage.setItem('agritech_lang', currentLang);
+        if (langSelector) langSelector.value = currentLang;
+
+        const shortLang = currentLang.split('-')[0];
+        setTranslateCookie(shortLang);
+
+        if (!isUserAction) return;
+
+        // Switching back to English works cleanest with a quick reload
+        if (shortLang === 'en') {
+          window.location.reload();
+          return;
+        }
+
+        const gtCombo = document.querySelector('.goog-te-combo');
+        if (gtCombo) {
+          gtCombo.value = shortLang;
+          gtCombo.dispatchEvent(new Event('change'));
+        } else {
+          // If Google Translate script is still loading, reload with the cookie set
+          window.location.reload();
+        }
+      }
+    true:
+        if (langSelector) {
+        langSelector.value = currentLang;
+        langSelector.addEventListener('change', (e) => applyLanguage(e.target.value, true));
+      }
   </script>
   <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
