@@ -184,7 +184,7 @@
         <a href="#disease" data-target="disease" class="nav-link block p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md transition group">
           <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">🔬</div>
           <h3 class="text-lg font-bold text-slate-900 dark:text-white">Disease Detection</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Snap leaf photos for instant AI health diagnosis.</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Snap or upload leaf photos for instant AI health diagnosis.</p>
         </a>
 
         <a href="#weather" data-target="weather" class="nav-link block p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md transition group">
@@ -222,7 +222,7 @@
           <ul class="space-y-3 text-slate-600 dark:text-slate-300">
             <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Installable mobile-ready web application with dark mode support.</li>
             <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Searchable All-India crop directory with season and soil guidance.</li>
-            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Camera-based plant leaf scanning and AI disease detection.</li>
+            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Camera and gallery-based plant leaf scanning and AI disease detection.</li>
             <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Real-time city weather forecasts and daily Mandi market rates.</li>
           </ul>
         </div>
@@ -265,7 +265,7 @@
         <div class="text-center mb-8">
           <span class="px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/50 rounded-full">AI DIAGNOSTICS</span>
           <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2">Leaf Disease Detection</h1>
-          <p class="text-slate-600 dark:text-slate-300 mt-2">Use your camera to scan an affected plant leaf for instant health analysis.</p>
+          <p class="text-slate-600 dark:text-slate-300 mt-2">Use your camera or upload a leaf photo for instant health analysis.</p>
         </div>
 
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-sm text-center">
@@ -279,12 +279,14 @@
           </div>
 
           <canvas id="captureCanvas" class="hidden"></canvas>
+          <input type="file" id="leafFileInput" accept="image/*" class="hidden">
 
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div class="flex flex-wrap items-center justify-center gap-3">
             <button id="startCameraBtn" class="w-full sm:w-auto px-6 py-3 bg-slate-800 dark:bg-slate-700 text-white font-bold rounded-xl hover:bg-slate-700 transition">Open Camera</button>
+            <button id="uploadLeafBtn" class="w-full sm:w-auto px-6 py-3 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-bold rounded-xl border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition">Upload Photo</button>
             <button id="takePhotoBtn" class="w-full sm:w-auto px-6 py-3 bg-brand-600 text-white font-bold rounded-xl shadow-lg hover:bg-brand-700 transition hidden">Snap Photo</button>
             <button id="analyzeCameraBtn" class="w-full sm:w-auto px-8 py-3 bg-brand-600 text-white font-bold rounded-xl shadow-lg hover:bg-brand-700 transition hidden">Analyze Crop Health</button>
-            <button id="retakeBtn" class="w-full sm:w-auto px-6 py-3 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white font-bold rounded-xl hover:bg-slate-300 transition hidden">Retake</button>
+            <button id="retakeBtn" class="w-full sm:w-auto px-6 py-3 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white font-bold rounded-xl hover:bg-slate-300 transition hidden">Reset</button>
           </div>
 
           <!-- Inline Diagnosis Result Card -->
@@ -305,61 +307,75 @@
       </div>
     </section>
 
-    <!-- PAGE 5: WEATHER (Mobile App Style) -->
+    <!-- PAGE 5: WEATHER (Responsive Web Dashboard) -->
     <section id="page-weather" class="page-section">
-      <div class="max-w-md mx-auto bg-gradient-to-b from-sky-400 to-blue-700 min-h-[82vh] rounded-[2.5rem] shadow-2xl p-6 sm:p-8 text-white relative overflow-hidden my-4 border-[6px] border-slate-800 dark:border-slate-700">
-        
-        <!-- City Search Bar -->
-        <div class="relative mb-8 z-10">
-          <input type="text" id="citySearchInput" placeholder="Search city (e.g., Bengaluru, Pune)..." class="w-full pl-11 pr-20 py-3.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/50 transition shadow-inner">
-          <span class="absolute left-4 top-3.5 text-lg">🔍</span>
-          <button id="citySearchBtn" class="absolute right-1.5 top-1.5 bottom-1.5 px-5 bg-white/20 hover:bg-white/30 rounded-full font-bold text-sm transition backdrop-blur-md shadow-sm">Find</button>
-        </div>
-
-        <!-- Main Hero Weather -->
-        <div class="text-center flex flex-col items-center z-10 relative">
-          <h2 id="weatherCity" class="text-3xl sm:text-4xl font-semibold tracking-wide drop-shadow-md">Loading...</h2>
-          <p id="weatherCondition" class="text-sky-100 text-lg mt-1 font-medium capitalize drop-shadow-md">Fetching live weather</p>
+      <div class="max-w-5xl mx-auto py-4">
+        <div class="bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-700 rounded-3xl shadow-xl p-6 sm:p-10 text-white relative overflow-hidden">
           
-          <div id="weatherIcon" class="my-5 flex justify-center items-center">
-            <span class="text-8xl drop-shadow-2xl">⛅</span>
+          <!-- Top Header & City Search Bar -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 relative z-10">
+            <div>
+              <span class="px-3 py-1 text-xs font-bold tracking-wider uppercase bg-white/20 backdrop-blur-md rounded-full">Live Forecast</span>
+              <h1 class="text-2xl sm:text-3xl font-extrabold mt-2">Agricultural Weather</h1>
+            </div>
+
+            <div class="relative w-full md:w-96">
+              <input type="text" id="citySearchInput" placeholder="Search city (e.g., Bengaluru, Pune)..." class="w-full pl-11 pr-20 py-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/50 transition shadow-inner">
+              <span class="absolute left-4 top-3 text-lg">🔍</span>
+              <button id="citySearchBtn" class="absolute right-1.5 top-1.5 bottom-1.5 px-5 bg-white/25 hover:bg-white/35 rounded-full font-bold text-sm transition backdrop-blur-md">Find</button>
+            </div>
           </div>
 
-          <div class="flex items-start justify-center ml-4">
-            <span id="weatherTemp" class="text-8xl font-thin tracking-tighter drop-shadow-xl">--</span>
-            <span class="text-4xl font-light mt-3 drop-shadow-md">°C</span>
+          <!-- Responsive Main Content: Side-by-side on Laptop, Stacked on Mobile -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+            
+            <!-- Left Column: Main Temperature Hero -->
+            <div class="lg:col-span-5 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 text-center flex flex-col items-center justify-center shadow-lg">
+              <h2 id="weatherCity" class="text-3xl sm:text-4xl font-bold tracking-wide drop-shadow-md">Loading...</h2>
+              <p id="weatherCondition" class="text-sky-100 text-lg mt-1 font-medium capitalize">Fetching live weather</p>
+              
+              <div id="weatherIcon" class="my-4 flex justify-center items-center">
+                <span class="text-8xl drop-shadow-2xl">⛅</span>
+              </div>
+
+              <div class="flex items-start justify-center ml-4">
+                <span id="weatherTemp" class="text-7xl sm:text-8xl font-thin tracking-tighter drop-shadow-xl">--</span>
+                <span class="text-3xl sm:text-4xl font-light mt-2">°C</span>
+              </div>
+            </div>
+
+            <!-- Right Column: 6 Weather Metrics Grid -->
+            <div class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-5 flex flex-col justify-center shadow-lg">
+                <span class="text-white/80 text-xs font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">💨 Wind</span>
+                <span id="weatherWind" class="text-xl sm:text-2xl font-semibold">-- km/h</span>
+              </div>
+              <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-5 flex flex-col justify-center shadow-lg">
+                <span class="text-white/80 text-xs font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">💧 Humidity</span>
+                <span id="weatherHumidity" class="text-xl sm:text-2xl font-semibold">-- %</span>
+              </div>
+              <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-5 flex flex-col justify-center shadow-lg">
+                <span class="text-white/80 text-xs font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">🌡️ Feels Like</span>
+                <span id="weatherFeelsLike" class="text-xl sm:text-2xl font-semibold">-- °C</span>
+              </div>
+              <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-5 flex flex-col justify-center shadow-lg">
+                <span class="text-white/80 text-xs font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">👁️ Visibility</span>
+                <span id="weatherVis" class="text-xl sm:text-2xl font-semibold">-- km</span>
+              </div>
+              <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-5 flex flex-col justify-center shadow-lg">
+                <span class="text-white/80 text-xs font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">🌅 Sunrise</span>
+                <span id="weatherSunrise" class="text-xl sm:text-2xl font-semibold">--:--</span>
+              </div>
+              <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-5 flex flex-col justify-center shadow-lg">
+                <span class="text-white/80 text-xs font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">🌇 Sunset</span>
+                <span id="weatherSunset" class="text-xl sm:text-2xl font-semibold">--:--</span>
+              </div>
+            </div>
+
           </div>
+
+          <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 blur-[100px] rounded-full pointer-events-none"></div>
         </div>
-
-        <!-- Glassmorphism Details Grid -->
-        <div class="grid grid-cols-2 gap-4 mt-10 z-10 relative">
-          <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-4 flex flex-col justify-center shadow-lg">
-            <span class="text-white/80 text-xs font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">💨 Wind</span>
-            <span id="weatherWind" class="text-xl font-semibold">-- km/h</span>
-          </div>
-          <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-4 flex flex-col justify-center shadow-lg">
-            <span class="text-white/80 text-xs font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">💧 Humidity</span>
-            <span id="weatherHumidity" class="text-xl font-semibold">-- %</span>
-          </div>
-          <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-4 flex flex-col justify-center shadow-lg">
-            <span class="text-white/80 text-xs font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">🌡️ Feels Like</span>
-            <span id="weatherFeelsLike" class="text-xl font-semibold">-- °C</span>
-          </div>
-          <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-4 flex flex-col justify-center shadow-lg">
-            <span class="text-white/80 text-xs font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">👁️ Visibility</span>
-            <span id="weatherVis" class="text-xl font-semibold">-- km</span>
-          </div>
-          <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-4 flex flex-col justify-center shadow-lg">
-            <span class="text-white/80 text-xs font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">🌅 Sunrise</span>
-            <span id="weatherSunrise" class="text-xl font-semibold">--:--</span>
-          </div>
-          <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-4 flex flex-col justify-center shadow-lg">
-            <span class="text-white/80 text-xs font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">🌇 Sunset</span>
-            <span id="weatherSunset" class="text-xl font-semibold">--:--</span>
-          </div>
-        </div>
-
-        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-64 h-64 bg-white/10 blur-[100px] rounded-full pointer-events-none"></div>
       </div>
     </section>
 
@@ -389,7 +405,7 @@
             </thead>
             <tbody id="marketTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/60">
               <tr>
-                <td colspan="5" class="p-8 text-center text-slate-500 dark:text-slate-400">Loading daily Mandi prices...</td>
+                <td colspan="5" class="p-8 text-center text-slate-500 dark:text-slate-400">Loading live All-India Mandi prices...</td>
               </tr>
             </tbody>
           </table>
@@ -407,9 +423,9 @@
   <!-- APPLICATION SCRIPTS -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Backend Base URL
       const API_BASE_URL = 'https://sturdy-space-fiesta-jr5g679569gjfqpqj-8000.app.github.dev';
       const WEATHER_API_KEY = '0a7e9f5366ba4c4298b104922260311';
+      const DATA_GOV_API_KEY = '579b464db66ec23bdd000001cc291d62f61d40dc53fb4f79cf103d79';
 
       // ==========================================
       // 1. NAVIGATION & THEME
@@ -452,32 +468,54 @@
       }
 
       // ==========================================
-      // 2. INDIAN CROPS DIRECTORY
+      // 2. INDIAN CROPS DIRECTORY (40 MAJOR CROPS)
       // ==========================================
       const FALLBACK_CROPS = [
+        // Cereals & Millets
         { name: "Rice (Paddy)", keywords: "rice paddy dhan", category: "cereal", season: "KHARIF • CEREAL", emoji: "🌾", climate: "Hot & Humid (20°C–37°C)", soil: "Clayey loams retaining standing water.", color: "emerald" },
         { name: "Wheat (Gehun)", keywords: "wheat gehun", category: "cereal", season: "RABI • CEREAL", emoji: "🌾", climate: "Cool Winter (10°C–15°C)", soil: "Well-drained fertile loams.", color: "amber" },
         { name: "Maize (Makka)", keywords: "maize makka corn", category: "cereal", season: "KHARIF • CEREAL", emoji: "🌽", climate: "Warm Climate (21°C–27°C)", soil: "Old alluvial soil with good drainage.", color: "emerald" },
         { name: "Jowar (Sorghum)", keywords: "jowar sorghum millet", category: "cereal", season: "KHARIF / RABI • MILLET", emoji: "🌾", climate: "Warm & Dry (26°C–33°C)", soil: "Black clayey loams and red soils.", color: "amber" },
         { name: "Bajra (Pearl Millet)", keywords: "bajra pearl millet", category: "cereal", season: "KHARIF • MILLET", emoji: "🌾", climate: "Hot & Dry (25°C–35°C)", soil: "Sandy loams and shallow black soils.", color: "amber" },
         { name: "Ragi (Finger Millet)", keywords: "ragi finger millet nachni", category: "cereal", season: "KHARIF • MILLET", emoji: "🌾", climate: "Moderate (20°C–30°C)", soil: "Red, black, sandy, and loamy soils.", color: "emerald" },
+        { name: "Barley (Jau)", keywords: "barley jau", category: "cereal", season: "RABI • CEREAL", emoji: "🌾", climate: "Cool & Dry (12°C–18°C)", soil: "Sandy loam to medium loam soils.", color: "amber" },
+        // Pulses
         { name: "Gram (Chana)", keywords: "gram chana chickpea pulses", category: "pulse", season: "RABI • PULSE", emoji: "🌱", climate: "Cool Climate (20°C–25°C)", soil: "Light loamy or heavy clay soils.", color: "amber" },
         { name: "Pigeon Pea (Tur / Arhar)", keywords: "pigeon pea tur arhar toor pulses", category: "pulse", season: "KHARIF • PULSE", emoji: "🫘", climate: "Warm & Moist (26°C–30°C)", soil: "Well-drained loamy soils.", color: "emerald" },
         { name: "Moong (Green Gram)", keywords: "moong mung green gram pulses", category: "pulse", season: "KHARIF / ZAID • PULSE", emoji: "🫘", climate: "Warm (25°C–35°C)", soil: "Well-drained sandy loams.", color: "emerald" },
+        { name: "Urad (Black Gram)", keywords: "urad black gram pulses", category: "pulse", season: "KHARIF • PULSE", emoji: "🫘", climate: "Hot & Humid (25°C–35°C)", soil: "Heavy clay or loamy soils.", color: "emerald" },
+        { name: "Masoor (Red Lentil)", keywords: "masoor lentil dal pulses", category: "pulse", season: "RABI • PULSE", emoji: "🫘", climate: "Cool Winter (18°C–25°C)", soil: "Alluvial and well-drained loams.", color: "amber" },
+        // Oilseeds
         { name: "Groundnut (Mungfali)", keywords: "groundnut peanut mungfali oilseed", category: "oilseed", season: "KHARIF • OILSEED", emoji: "🥜", climate: "Warm Climate (20°C–30°C)", soil: "Sandy loams and well-drained soils.", color: "amber" },
         { name: "Soybean", keywords: "soybean soya oilseed", category: "oilseed", season: "KHARIF • OILSEED", emoji: "🌿", climate: "Warm & Humid (20°C–30°C)", soil: "Fertile alluvial or clay-loam soils.", color: "emerald" },
         { name: "Mustard (Sarson)", keywords: "mustard sarson rai oilseed", category: "oilseed", season: "RABI • OILSEED", emoji: "🌼", climate: "Cool & Dry (15°C–25°C)", soil: "Light to heavy loamy soils.", color: "amber" },
+        { name: "Sunflower (Surajmukhi)", keywords: "sunflower surajmukhi oilseed", category: "oilseed", season: "ALL SEASON • OILSEED", emoji: "🌻", climate: "Moderate (20°C–25°C)", soil: "Deep loamy and black cotton soils.", color: "amber" },
+        { name: "Sesame (Til)", keywords: "sesame til gingelly oilseed", category: "oilseed", season: "KHARIF • OILSEED", emoji: "🌱", climate: "Warm (25°C–30°C)", soil: "Well-drained light sandy loams.", color: "emerald" },
+        { name: "Castor (Arandi)", keywords: "castor arandi oilseed", category: "oilseed", season: "KHARIF • OILSEED", emoji: "🌿", climate: "Warm & Dry (20°C–30°C)", soil: "Deep sandy loam and red soils.", color: "emerald" },
+        // Commercial & Cash Crops
         { name: "Cotton (Kapas)", keywords: "cotton kapas commercial", category: "commercial", season: "KHARIF • COMMERCIAL", emoji: "☁️", climate: "High Temp (21°C–30°C)", soil: "Black cotton soil (Regur) of Deccan.", color: "purple" },
         { name: "Sugarcane (Ganna)", keywords: "sugarcane ganna commercial", category: "commercial", season: "ANNUAL • COMMERCIAL", emoji: "🎋", climate: "Hot & Humid (20°C–35°C)", soil: "Deep rich loamy soils with high moisture.", color: "purple" },
+        { name: "Jute (Pat)", keywords: "jute pat golden fibre commercial", category: "commercial", season: "KHARIF • COMMERCIAL", emoji: "🌾", climate: "Hot & Wet (24°C–37°C)", soil: "New alluvial soil of river deltas.", color: "purple" },
+        { name: "Natural Rubber", keywords: "rubber plantation commercial", category: "commercial", season: "PERENNIAL • COMMERCIAL", emoji: "🌳", climate: "Equatorial Humid (25°C–35°C)", soil: "Deep well-drained laterite soils.", color: "purple" },
+        // Spices & Plantation
         { name: "Tea (Chai)", keywords: "tea chai plantation spice", category: "spice", season: "PERENNIAL • PLANTATION", emoji: "🍵", climate: "Cool & Humid (15°C–30°C)", soil: "Deep acidic hill-slope loams.", color: "rose" },
         { name: "Coffee", keywords: "coffee arabica robusta plantation", category: "spice", season: "PERENNIAL • PLANTATION", emoji: "☕", climate: "Cool Tropical (15°C–28°C)", soil: "Rich, well-drained forest loams.", color: "rose" },
         { name: "Turmeric (Haldi)", keywords: "turmeric haldi spice", category: "spice", season: "KHARIF • SPICE", emoji: "🫚", climate: "Warm & Humid (20°C–30°C)", soil: "Friable, well-drained loamy soils.", color: "rose" },
+        { name: "Ginger (Adrak)", keywords: "ginger adrak spice", category: "spice", season: "KHARIF • SPICE", emoji: "🫚", climate: "Warm & Humid (20°C–30°C)", soil: "Sandy or clay loam rich in humus.", color: "rose" },
+        { name: "Black Pepper (Kali Mirch)", keywords: "black pepper kali mirch spice", category: "spice", season: "PERENNIAL • SPICE", emoji: "🫑", climate: "Hot & Humid (20°C–30°C)", soil: "Red laterite and forest loams.", color: "rose" },
+        { name: "Cardamom (Elaichi)", keywords: "cardamom elaichi spice", category: "spice", season: "PERENNIAL • SPICE", emoji: "🌿", climate: "Cool & Wet (10°C–35°C)", soil: "Acidic, humus-rich forest loams.", color: "rose" },
         { name: "Red Chilli (Mirchi)", keywords: "chilli mirchi pepper spice", category: "spice", season: "KHARIF / RABI • SPICE", emoji: "🌶️", climate: "Warm & Humid (20°C–30°C)", soil: "Well-drained black or loamy soils.", color: "rose" },
+        { name: "Cumin (Jeera)", keywords: "cumin jeera spice", category: "spice", season: "RABI • SPICE", emoji: "🌱", climate: "Cool & Dry (15°C–25°C)", soil: "Well-drained sandy loam soils.", color: "rose" },
+        // Horticulture
         { name: "Potato (Aloo)", keywords: "potato aloo vegetable horticulture", category: "horticulture", season: "RABI • HORTICULTURE", emoji: "🥔", climate: "Cool Weather (15°C–20°C)", soil: "Loose, friable sandy loams rich in humus.", color: "blue" },
         { name: "Tomato (Tamatar)", keywords: "tomato tamatar vegetable horticulture", category: "horticulture", season: "ALL SEASON • HORTICULTURE", emoji: "🍅", climate: "Moderate (18°C–25°C)", soil: "Well-drained sandy loam with organic matter.", color: "blue" },
         { name: "Onion (Pyaaz)", keywords: "onion pyaaz kanda vegetable horticulture", category: "horticulture", season: "KHARIF / RABI • HORTICULTURE", emoji: "🧅", climate: "Mild Climate (13°C–25°C)", soil: "Deep friable alluvial and loamy soils.", color: "blue" },
+        { name: "Brinjal (Baingan)", keywords: "brinjal eggplant baingan vegetable horticulture", category: "horticulture", season: "ALL SEASON • HORTICULTURE", emoji: "🍆", climate: "Warm (20°C–30°C)", soil: "Fertile silt loam or clay loam.", color: "blue" },
+        { name: "Cauliflower (Gobhi)", keywords: "cauliflower gobhi vegetable horticulture", category: "horticulture", season: "RABI • HORTICULTURE", emoji: "🥦", climate: "Cool (15°C–20°C)", soil: "Deep loamy soil rich in organic matter.", color: "blue" },
         { name: "Banana (Kela)", keywords: "banana kela fruit horticulture", category: "horticulture", season: "PERENNIAL • HORTICULTURE", emoji: "🍌", climate: "Tropical Warm (20°C–35°C)", soil: "Rich, deep, well-drained fertile soils.", color: "blue" },
         { name: "Mango (Aam)", keywords: "mango aam fruit horticulture", category: "horticulture", season: "SUMMER • HORTICULTURE", emoji: "🥭", climate: "Tropical Warm (24°C–30°C)", soil: "Deep, well-drained alluvial or laterite soils.", color: "blue" },
+        { name: "Apple (Seb)", keywords: "apple seb fruit horticulture", category: "horticulture", season: "TEMPERATE • HORTICULTURE", emoji: "🍎", climate: "Cold Winters (0°C–24°C)", soil: "Well-drained loamy hill soils.", color: "blue" },
+        { name: "Grapes (Angoor)", keywords: "grapes angoor fruit horticulture", category: "horticulture", season: "PERENNIAL • HORTICULTURE", emoji: "🍇", climate: "Dry & Warm (15°C–35°C)", soil: "Well-drained sandy loam to black soils.", color: "blue" },
         { name: "Coconut (Nariyal)", keywords: "coconut nariyal plantation horticulture", category: "horticulture", season: "PERENNIAL • HORTICULTURE", emoji: "🥥", climate: "Coastal Humid (25°C–32°C)", soil: "Coastal sandy, alluvial, and red loamy soils.", color: "blue" }
       ];
 
@@ -556,13 +594,15 @@
       loadCropsDirectory();
 
       // ==========================================
-      // 3. LEAF DISEASE DETECTION & SCAN HISTORY
+      // 3. LEAF DISEASE DETECTION (CAMERA + UPLOAD)
       // ==========================================
       const video = document.getElementById('cameraFeed');
       const canvas = document.getElementById('captureCanvas');
       const photoPreview = document.getElementById('photoPreview');
       const cameraPlaceholder = document.getElementById('cameraPlaceholder');
       const startCameraBtn = document.getElementById('startCameraBtn');
+      const uploadLeafBtn = document.getElementById('uploadLeafBtn');
+      const leafFileInput = document.getElementById('leafFileInput');
       const takePhotoBtn = document.getElementById('takePhotoBtn');
       const analyzeCameraBtn = document.getElementById('analyzeCameraBtn');
       const retakeBtn = document.getElementById('retakeBtn');
@@ -570,6 +610,13 @@
 
       let currentStream = null;
       let capturedBlob = null;
+
+      function stopCameraStream() {
+        if (currentStream) {
+          currentStream.getTracks().forEach(track => track.stop());
+          currentStream = null;
+        }
+      }
 
       async function loadScanHistory() {
         const historyContainer = document.getElementById('scanHistoryList');
@@ -608,12 +655,40 @@
             resultCard.classList.add('hidden');
 
             startCameraBtn.classList.add('hidden');
+            uploadLeafBtn.classList.add('hidden');
             takePhotoBtn.classList.remove('hidden');
             analyzeCameraBtn.classList.add('hidden');
             retakeBtn.classList.add('hidden');
           } catch (err) {
-            alert("Could not access the camera. Please ensure camera permissions are enabled.");
+            alert("Could not access the camera. Please enable permissions or use Upload Photo.");
           }
+        });
+
+        uploadLeafBtn.addEventListener('click', () => {
+          leafFileInput.click();
+        });
+
+        leafFileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          stopCameraStream();
+          capturedBlob = file;
+
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            photoPreview.src = ev.target.result;
+            video.classList.add('hidden');
+            cameraPlaceholder.classList.add('hidden');
+            photoPreview.classList.remove('hidden');
+            resultCard.classList.add('hidden');
+
+            startCameraBtn.classList.add('hidden');
+            uploadLeafBtn.classList.add('hidden');
+            takePhotoBtn.classList.add('hidden');
+            analyzeCameraBtn.classList.remove('hidden');
+            retakeBtn.classList.remove('hidden');
+          };
+          reader.readAsDataURL(file);
         });
 
         takePhotoBtn.addEventListener('click', () => {
@@ -626,6 +701,7 @@
           photoPreview.classList.remove('hidden');
 
           canvas.toBlob((blob) => { capturedBlob = blob; }, 'image/jpeg', 0.9);
+          stopCameraStream();
 
           takePhotoBtn.classList.add('hidden');
           analyzeCameraBtn.classList.remove('hidden');
@@ -633,13 +709,18 @@
         });
 
         retakeBtn.addEventListener('click', () => {
+          stopCameraStream();
           photoPreview.classList.add('hidden');
-          video.classList.remove('hidden');
+          video.classList.add('hidden');
+          cameraPlaceholder.classList.remove('hidden');
           resultCard.classList.add('hidden');
 
           analyzeCameraBtn.classList.add('hidden');
           retakeBtn.classList.add('hidden');
-          takePhotoBtn.classList.remove('hidden');
+          takePhotoBtn.classList.add('hidden');
+          startCameraBtn.classList.remove('hidden');
+          uploadLeafBtn.classList.remove('hidden');
+          leafFileInput.value = '';
           capturedBlob = null;
         });
 
@@ -723,11 +804,10 @@
         });
       }
 
-      // Default startup city
       getWeatherData("Bengaluru");
 
       // ==========================================
-      // 5. DAILY MARKET PRICES
+      // 5. LIVE DAILY MARKET PRICES (UP TO 500 RECORDS)
       // ==========================================
       const FALLBACK_PRICES = [
         { commodity: "Paddy (Common)", variety: "Grade A", market: "Karnal, Haryana", min_price: "2,440", max_price: "2,480", modal_price: "2,460", arrival_date: "Today" },
@@ -744,7 +824,7 @@
         if (!tableBody) return;
 
         tableBody.innerHTML = prices.map(item => `
-          <tr class="hover:bg-slate-50 dark:hover:bg-slate-750 transition">
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
             <td class="p-4 font-semibold text-slate-700 dark:text-slate-200">
               ${item.commodity} <span class="text-xs font-normal text-slate-400 block">${item.variety || ''}</span>
             </td>
@@ -759,14 +839,52 @@
       }
 
       async function loadMarketPrices() {
-        try {
-          const response = await fetch(`${API_BASE_URL}/market-prices?limit=40`, { cache: 'no-store' });
-          if (!response.ok) throw new Error('API unavailable');
-          const result = await response.json();
-          renderMarketPrices(result.data && result.data.length > 0 ? result.data : FALLBACK_PRICES);
-        } catch (err) {
-          renderMarketPrices(FALLBACK_PRICES);
+        const tableBody = document.getElementById('marketTableBody');
+        if (tableBody) {
+          tableBody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-500 dark:text-slate-400">Loading live All-India Mandi prices...</td></tr>`;
         }
+
+        // 1. Try backend first
+        try {
+          const response = await fetch(`${API_BASE_URL}/market-prices?limit=500`, { cache: 'no-store' });
+          if (response.ok) {
+            const result = await response.json();
+            if (result.data && result.data.length > 0) {
+              renderMarketPrices(result.data);
+              return;
+            }
+          }
+        } catch (err) {
+          // Proceed to direct live fetch
+        }
+
+        // 2. Direct live fetch from data.gov.in (works even when backend is asleep)
+        try {
+          const directUrl = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${DATA_GOV_API_KEY}&format=json&limit=500`;
+          const directRes = await fetch(directUrl, { cache: 'no-store' });
+          if (!directRes.ok) throw new Error('Direct API error');
+
+          const directData = await directRes.json();
+          const records = (directData.records || []).map(item => ({
+            commodity: item.commodity || 'N/A',
+            variety: item.variety || '',
+            market: `${item.market || ''}, ${item.state || ''}`,
+            min_price: item.min_price || '--',
+            max_price: item.max_price || '--',
+            modal_price: item.modal_price || '--',
+            arrival_date: item.arrival_date || 'Today'
+          }));
+
+          if (records.length > 0) {
+            renderMarketPrices(records);
+            return;
+          }
+        } catch (err) {
+          // Proceed to offline fallback
+        }
+
+        // 3. Final offline fallback
+        renderMarketPrices(FALLBACK_PRICES);
       }
 
       window.filterMarketTable = function() {
