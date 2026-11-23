@@ -81,6 +81,16 @@
       font-family: 'Inter', sans-serif;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
+      top: 0px !important;
+    }
+
+    /* Hide default Google Translate toolbar */
+    .goog-te-banner-frame.skiptranslate,
+    .goog-te-gadget-icon,
+    #goog-gt-tt,
+    .goog-te-balloon-frame,
+    #google_translate_element {
+      display: none !important;
     }
 
     .page-section {
@@ -104,6 +114,9 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col justify-between transition-colors duration-200">
 
+  <!-- Hidden Google Translate Mount -->
+  <div id="google_translate_element"></div>
+
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -112,7 +125,7 @@
         <!-- Logo -->
         <a href="#home" class="nav-link flex items-center gap-2 text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white shrink-0" data-target="home">
           <span class="text-2xl sm:text-3xl">🌱</span>
-          <span>AgriTech</span>
+          <span class="notranslate">AgriTech</span>
         </a>
 
         <!-- Desktop Navigation -->
@@ -131,7 +144,7 @@
 
         <!-- Controls -->
         <div class="flex items-center gap-2">
-          <select id="langSelector" aria-label="Select Language" class="px-2.5 py-1.5 text-xs sm:text-sm font-semibold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-brand-500">
+          <select id="langSelector" aria-label="Select Language" class="notranslate px-2.5 py-1.5 text-xs sm:text-sm font-semibold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-brand-500">
             <option value="en-IN">🌐 English</option>
             <option value="kn-IN">ಕನ್ನಡ (Kannada)</option>
             <option value="hi-IN">हिन्दी (Hindi)</option>
@@ -180,7 +193,7 @@
           Smart Farming,<br><em class="not-italic text-brand-600 dark:text-brand-500 underline decoration-brand-300 decoration-4">Better Future.</em>
         </h1>
         <p class="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed mb-8">
-          AgriTech empowers Indian farmers with crop intelligence, AI leaf diagnostics, hyper-local weather, live Mandi rates, tractor rentals, precision NPK dosing, soil mapping, direct B2B buyers, and native voice navigation.
+          AgriTech empowers Indian farmers with crop intelligence, AI leaf diagnostics, hyper-local weather, live Mandi rates, tractor rentals, precision NPK dosing, Google Maps soil mapping, direct B2B buyers, and native voice navigation.
         </p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
           <button class="w-full sm:w-auto px-6 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition nav-link" data-target="crop">
@@ -233,7 +246,7 @@
         <a href="#soil" data-target="soil" class="nav-link block p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md transition group">
           <div class="w-12 h-12 rounded-xl bg-yellow-100 dark:bg-yellow-900/50 text-yellow-600 dark:text-yellow-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">🗺️</div>
           <h3 class="text-lg font-bold text-slate-900 dark:text-white">Soil Health & Map</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Pin your field and log Soil Health Card values.</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Pin your field on Google Maps and log Soil Health Cards.</p>
         </a>
 
         <a href="#buyers" data-target="buyers" class="nav-link block p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md transition group">
@@ -256,16 +269,16 @@
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700">
           <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">🎯 Our Mission</h2>
           <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
-            Our mission is to make precision agriculture simple, fast, and accessible on any device in every farmer's native language. AgriTech unites crop cultivation guides, AI leaf diagnostics, live weather updates, daily Mandi prices, machinery sharing, NPK calculators, soil mapping, direct B2B buyers, and voice assistance.
+            Our mission is to make precision agriculture simple, fast, and accessible on any device in every farmer's native language. AgriTech unites crop cultivation guides, AI leaf diagnostics, live weather updates, daily Mandi prices, machinery sharing, NPK calculators, Google Maps soil mapping, direct B2B buyers, and voice assistance.
           </p>
         </div>
 
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700">
           <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">📋 Platform Capabilities</h2>
           <ul class="space-y-3 text-slate-600 dark:text-slate-300">
-            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Multilingual UI & hands-free voice assistant in Kannada, Hindi, Telugu, Tamil, Marathi, and English.</li>
+            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Full-site native translation & hands-free voice assistant in Kannada, Hindi, Telugu, Tamil, Marathi, and English.</li>
             <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Searchable All-India crop directory synced with daily Agmarknet prices.</li>
-            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Camera & gallery plant leaf scanning, NPK dosage calculator, and interactive Soil Health Card mapping.</li>
+            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Camera & gallery plant leaf scanning, NPK dosage calculator, and interactive Google Maps Soil Health Card mapping.</li>
             <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Peer-to-peer machinery rental marketplace and direct B2B buyer lead board.</li>
           </ul>
         </div>
@@ -559,20 +572,30 @@
       </div>
     </section>
 
-    <!-- PAGE 9: SOIL HEALTH CARD & FIELD MAPPING -->
+    <!-- PAGE 9: SOIL HEALTH CARD & GOOGLE MAPS FIELD MAPPING -->
     <section id="page-soil" class="page-section">
       <div class="max-w-6xl mx-auto py-8">
         <div class="text-center mb-8">
           <span class="px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/50 rounded-full">PRECISION AGRICULTURE</span>
           <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2">Soil Health Card & Field Mapping</h1>
-          <p class="text-slate-600 dark:text-slate-300 mt-2">Pin your farm on the map and enter your Soil Health Card values for custom crop recommendations.</p>
+          <p class="text-slate-600 dark:text-slate-300 mt-2">Pin your farm on Google Maps and enter your Soil Health Card values for custom crop recommendations.</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div class="lg:col-span-6 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-            <p class="text-xs font-bold text-slate-500 uppercase mb-2">📍 Click on the map to pin your field</p>
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-xs font-bold text-slate-500 uppercase">📍 Tap or drag pin on Google Maps</p>
+              <button type="button" id="soilGpsBtn" class="px-3 py-1 bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300 text-xs font-bold rounded-lg transition">
+                📍 My Farm (GPS)
+              </button>
+            </div>
             <div id="soilMap" class="w-full h-80 rounded-xl z-10"></div>
-            <p id="pinnedCoords" class="text-xs text-slate-500 mt-2">Selected Coordinates: Bengaluru (12.9716, 77.5946)</p>
+            <div class="flex items-center justify-between mt-2">
+              <p id="pinnedCoords" class="text-xs text-slate-500">Selected: 12.97160, 77.59460</p>
+              <a id="openGoogleMapsLink" href="https://www.google.com/maps?q=12.9716,77.5946" target="_blank" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline">
+                Open in Google Maps ↗
+              </a>
+            </div>
           </div>
 
           <div class="lg:col-span-6 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
@@ -1358,26 +1381,75 @@
       }
 
       // ==========================================
-      // 8. SOIL HEALTH CARD & LEAFLET FIELD MAP
+      // 8. SOIL HEALTH CARD & GOOGLE MAPS FIELD MAP
       // ==========================================
       let soilMap = null;
       let soilMarker = null;
       let selectedLat = 12.9716;
       let selectedLng = 77.5946;
 
+      function updatePinnedLocation(lat, lng) {
+        selectedLat = lat;
+        selectedLng = lng;
+        if (soilMarker) soilMarker.setLatLng([lat, lng]);
+        if (soilMap) soilMap.setView([lat, lng], 16);
+        document.getElementById('pinnedCoords').textContent = `Selected: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+        const gMapsLink = document.getElementById('openGoogleMapsLink');
+        if (gMapsLink) gMapsLink.href = `https://www.google.com/maps?q=${lat},${lng}`;
+      }
+
       function initSoilMap() {
         if (soilMap || typeof L === 'undefined') return;
-        soilMap = L.map('soilMap').setView([selectedLat, selectedLng], 10);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap'
+
+        const googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+          maxZoom: 20, attribution: '© Google Maps'
+        });
+        const googleStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+          maxZoom: 20, attribution: '© Google Maps'
+        });
+        const openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19, attribution: '© OpenStreetMap'
+        });
+
+        soilMap = L.map('soilMap', {
+          center: [selectedLat, selectedLng],
+          zoom: 15,
+          layers: [googleHybrid]
+        });
+
+        L.control.layers({
+          "🛰️ Google Satellite": googleHybrid,
+          "🗺️ Google Streets": googleStreets,
+          "🌍 OpenStreetMap": openStreetMap
         }).addTo(soilMap);
 
-        soilMarker = L.marker([selectedLat, selectedLng]).addTo(soilMap);
-        soilMap.on('click', (e) => {
-          selectedLat = e.latlng.lat;
-          selectedLng = e.latlng.lng;
-          soilMarker.setLatLng([selectedLat, selectedLng]);
-          document.getElementById('pinnedCoords').textContent = `Selected Coordinates: ${selectedLat.toFixed(4)}, ${selectedLng.toFixed(4)}`;
+        soilMarker = L.marker([selectedLat, selectedLng], { draggable: true }).addTo(soilMap);
+        soilMap.on('click', (e) => updatePinnedLocation(e.latlng.lat, e.latlng.lng));
+        soilMarker.on('dragend', () => {
+          const pos = soilMarker.getLatLng();
+          updatePinnedLocation(pos.lat, pos.lng);
+        });
+      }
+
+      const soilGpsBtn = document.getElementById('soilGpsBtn');
+      if (soilGpsBtn) {
+        soilGpsBtn.addEventListener('click', () => {
+          if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser.");
+            return;
+          }
+          soilGpsBtn.textContent = "Locating...";
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              initSoilMap();
+              updatePinnedLocation(pos.coords.latitude, pos.coords.longitude);
+              soilGpsBtn.textContent = "📍 My Farm (GPS)";
+            },
+            () => {
+              alert("Location access denied. Tap the map to pin your field manually.");
+              soilGpsBtn.textContent = "📍 My Farm (GPS)";
+            }
+          );
         });
       }
 
@@ -1496,12 +1568,10 @@
       loadBuyerLeads();
 
       // ==========================================
-      // 10. NATIVE LANGUAGE SWITCHER & VOICE ASSISTANT
+      // 10. FULL-SITE TRANSLATION & VOICE ASSISTANT
       // ==========================================
-      const TRANSLATIONS = {
+      const VOICE_MESSAGES = {
         "en-IN": {
-          nav: { home: "Home", crop: "Crops", disease: "Disease AI", weather: "Weather", market: "Market", equipment: "Rentals", calculator: "NPK Calc", soil: "Soil Map", buyers: "Buyers", about: "About" },
-          heroTitle: 'Smart Farming,<br><em class="not-italic text-brand-600 dark:text-brand-500 underline decoration-brand-300 decoration-4">Better Future.</em>',
           listening: "🎙️ Listening... Say 'Weather', 'Market', 'Crops', or 'Rentals'",
           responses: {
             weather: "Opening live weather forecast.",
@@ -1510,15 +1580,13 @@
             disease: "Opening AI leaf disease scanner.",
             equipment: "Opening tractor and machinery rentals.",
             calculator: "Opening fertilizer NPK calculator.",
-            soil: "Opening soil health card and field map.",
+            soil: "Opening soil health card and Google Map.",
             buyers: "Opening direct buyer connect board.",
             home: "Returning to home page.",
             unknown: "Sorry, I did not understand. Try saying Weather, Market, Crops, or Rentals."
           }
         },
         "kn-IN": {
-          nav: { home: "ಮುಖಪುಟ", crop: "ಬೆಳೆಗಳು", disease: "ರೋಗ ಪತ್ತೆ", weather: "ಹವಾಮಾನ", market: "ಮಾರುಕಟ್ಟೆ", equipment: "ಬಾಡಿಗೆ", calculator: "ಗೊಬ್ಬರ", soil: "ಮಣ್ಣು", buyers: "ಖರೀದಿದಾರರು", about: "ನಮ್ಮ ಬಗ್ಗೆ" },
-          heroTitle: 'ಸ್ಮಾರ್ಟ್ ಕೃಷಿ,<br><em class="not-italic text-brand-600 dark:text-brand-500 underline decoration-brand-300 decoration-4">ಉತ್ತಮ ಭವಿಷ್ಯ.</em>',
           listening: "🎙️ ಕೇಳಿಸಿಕೊಳ್ಳುತ್ತಿದೆ... 'ಹವಾಮಾನ', 'ಮಾರುಕಟ್ಟೆ', ಅಥವಾ 'ಬೆಳೆಗಳು' ಎಂದು ಹೇಳಿ",
           responses: {
             weather: "ಹವಾಮಾನ ಮುನ್ಸೂಚನೆ ತೆರೆಯಲಾಗುತ್ತಿದೆ.",
@@ -1534,8 +1602,6 @@
           }
         },
         "hi-IN": {
-          nav: { home: "होम", crop: "फसलें", disease: "रोग जांच", weather: "मौसम", market: "मंडी भाव", equipment: "किराया", calculator: "खाद गणना", soil: "मिट्टी", buyers: "खरीदार", about: "जानकारी" },
-          heroTitle: 'स्मार्ट खेती,<br><em class="not-italic text-brand-600 dark:text-brand-500 underline decoration-brand-300 decoration-4">बेहतर भविष्य.</em>',
           listening: "🎙️ सुन रहा हूँ... 'मौसम', 'मंडी भाव', 'फसलें', या 'किराया' बोलें",
           responses: {
             weather: "लाइव मौसम पूर्वानुमान खोला जा रहा है।",
@@ -1551,8 +1617,6 @@
           }
         },
         "te-IN": {
-          nav: { home: "హోమ్", crop: "పంటలు", disease: "వ్యాధి నిర్ధారణ", weather: "వాతావరణం", market: "మార్కెట్", equipment: "అద్దె", calculator: "ఎరువులు", soil: "నేల", buyers: "కొనుగోలుదారులు", about: "గురించి" },
-          heroTitle: 'స్మార్ట్ వ్యవసాయం,<br><em class="not-italic text-brand-600 dark:text-brand-500 underline decoration-brand-300 decoration-4">మెరుగైన భవిష్యత్తు.</em>',
           listening: "🎙️ వింటున్నాను... 'వాతావరణం', 'మార్కెట్', లేదా 'పంటలు' అని చెప్పండి",
           responses: {
             weather: "వాతావరణ వివరాలు తెరుస్తున్నాము.",
@@ -1568,8 +1632,6 @@
           }
         },
         "ta-IN": {
-          nav: { home: "முகப்பு", crop: "பயிர்கள்", disease: "நோய் கண்டறிதல்", weather: "வானிலை", market: "சந்தை விலை", equipment: "வாடகை", calculator: "உரம்", soil: "மண்", buyers: "வாங்குபவர்கள்", about: "பற்றி" },
-          heroTitle: 'ஸ்மார்ட் விவசாயம்,<br><em class="not-italic text-brand-600 dark:text-brand-500 underline decoration-brand-300 decoration-4">சிறந்த எதிர்காலம்.</em>',
           listening: "🎙️ கேட்கிறது... 'வானிலை', 'சந்தை', அல்லது 'பயிர்கள்' என்று சொல்லுங்கள்",
           responses: {
             weather: "வானிலை அறிக்கை திறக்கப்படுகிறது.",
@@ -1585,8 +1647,6 @@
           }
         },
         "mr-IN": {
-          nav: { home: "मुख्यपृष्ठ", crop: "पिके", disease: "रोग तपासणी", weather: "हवामान", market: "बाजारभाव", equipment: "भाडे", calculator: "खत गणना", soil: "माती", buyers: "खरेदीदार", about: "माहिती" },
-          heroTitle: 'स्मार्ट शेती,<br><em class="not-italic text-brand-600 dark:text-brand-500 underline decoration-brand-300 decoration-4">उत्तम भविष्य.</em>',
           listening: "🎙️ ऐकत आहे... 'हवामान', 'बाजारभाव', किंवा 'पिके' बोला",
           responses: {
             weather: "हवामान अंदाज उघडत आहे.",
@@ -1607,24 +1667,24 @@
       const langSelector = document.getElementById('langSelector');
 
       function applyLanguage(lang) {
-        currentLang = TRANSLATIONS[lang] ? lang : 'en-IN';
+        currentLang = VOICE_MESSAGES[lang] ? lang : 'en-IN';
         localStorage.setItem('agritech_lang', currentLang);
         if (langSelector) langSelector.value = currentLang;
 
-        const t = TRANSLATIONS[currentLang];
-        document.querySelectorAll('header nav a.nav-link').forEach(link => {
-          const key = link.getAttribute('data-target');
-          if (t.nav[key]) link.textContent = t.nav[key];
-        });
+        const shortLang = currentLang.split('-')[0];
+        document.cookie = `googtrans=/en/${shortLang}; path=/`;
 
-        const heroH1 = document.querySelector('#page-home h1');
-        if (heroH1 && t.heroTitle) heroH1.innerHTML = t.heroTitle;
+        const gtCombo = document.querySelector('.goog-te-combo');
+        if (gtCombo) {
+          gtCombo.value = shortLang;
+          gtCombo.dispatchEvent(new Event('change'));
+        }
       }
 
       if (langSelector) {
+        langSelector.value = currentLang;
         langSelector.addEventListener('change', (e) => applyLanguage(e.target.value));
       }
-      applyLanguage(currentLang);
 
       function speakText(text) {
         if (!('speechSynthesis' in window)) return;
@@ -1642,7 +1702,7 @@
 
       function handleVoiceCommand(transcript) {
         const text = transcript.toLowerCase();
-        const r = TRANSLATIONS[currentLang].responses;
+        const r = VOICE_MESSAGES[currentLang].responses;
 
         if (/weather|rain|temperature|ಹವಾಮಾನ|ಮಳೆ|मौसम|बारिश|వాతావరణం|வானிலை|हवामान/.test(text)) {
           navigateToPage('weather'); speakText(r.weather);
@@ -1680,7 +1740,7 @@
           voiceBtn.addEventListener('click', () => {
             recognition.lang = currentLang;
             voiceBubble.classList.remove('hidden');
-            voiceText.textContent = TRANSLATIONS[currentLang].listening;
+            voiceText.textContent = VOICE_MESSAGES[currentLang].listening;
             voiceBtn.classList.add('animate-pulse', 'bg-red-600');
             recognition.start();
           });
@@ -1704,5 +1764,17 @@
       }
     });
   </script>
+
+  <!-- Google Translate Engine -->
+  <script>
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,kn,hi,te,ta,mr',
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
