@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-  <meta name="description" content="AgriTech — Smart Agricultural Guidance, Live Weather, Indian Crops Directory, Daily Market Prices, and AI Leaf Disease Detection.">
+  <meta name="description" content="AgriTech — Smart Agricultural Guidance, Live Weather, Indian Crops Directory, Daily Market Prices, AI Leaf Disease Detection, Equipment Rentals, NPK Calculator, Soil Mapping & Direct Buyers.">
   <meta name="theme-color" content="#16a34a">
 
   <!-- Mobile Web App Meta Tags -->
@@ -36,11 +36,13 @@
     document.head.appendChild(link);
   </script>
 
-  <!-- Fonts & Tailwind CSS -->
+  <!-- Fonts, Tailwind CSS & Leaflet Map -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
     tailwind.config = {
@@ -108,28 +110,41 @@
       <div class="flex items-center justify-between h-16 sm:h-20">
         
         <!-- Logo -->
-        <a href="#home" class="nav-link flex items-center gap-2 text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white" data-target="home">
+        <a href="#home" class="nav-link flex items-center gap-2 text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white shrink-0" data-target="home">
           <span class="text-2xl sm:text-3xl">🌱</span>
           <span>AgriTech</span>
         </a>
 
         <!-- Desktop Navigation -->
-        <nav class="hidden md:flex items-center gap-1">
-          <a href="#home" data-target="home" class="nav-link px-3 py-2 text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Home</a>
-          <a href="#about" data-target="about" class="nav-link px-3 py-2 text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">About</a>
-          <a href="#crop" data-target="crop" class="nav-link px-3 py-2 text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Crop Info</a>
-          <a href="#disease" data-target="disease" class="nav-link px-3 py-2 text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Disease Detection</a>
-          <a href="#weather" data-target="weather" class="nav-link px-3 py-2 text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Weather</a>
-          <a href="#market" data-target="market" class="nav-link px-3 py-2 text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Market Prices</a>
+        <nav class="hidden lg:flex items-center gap-0.5">
+          <a href="#home" data-target="home" class="nav-link px-2.5 py-2 text-xs xl:text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Home</a>
+          <a href="#crop" data-target="crop" class="nav-link px-2.5 py-2 text-xs xl:text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Crops</a>
+          <a href="#disease" data-target="disease" class="nav-link px-2.5 py-2 text-xs xl:text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Disease AI</a>
+          <a href="#weather" data-target="weather" class="nav-link px-2.5 py-2 text-xs xl:text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Weather</a>
+          <a href="#market" data-target="market" class="nav-link px-2.5 py-2 text-xs xl:text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Market</a>
+          <a href="#equipment" data-target="equipment" class="nav-link px-2.5 py-2 text-xs xl:text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Rentals</a>
+          <a href="#calculator" data-target="calculator" class="nav-link px-2.5 py-2 text-xs xl:text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">NPK Calc</a>
+          <a href="#soil" data-target="soil" class="nav-link px-2.5 py-2 text-xs xl:text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Soil Map</a>
+          <a href="#buyers" data-target="buyers" class="nav-link px-2.5 py-2 text-xs xl:text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Buyers</a>
+          <a href="#about" data-target="about" class="nav-link px-2.5 py-2 text-xs xl:text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">About</a>
         </nav>
 
         <!-- Controls -->
         <div class="flex items-center gap-2">
+          <select id="langSelector" aria-label="Select Language" class="px-2.5 py-1.5 text-xs sm:text-sm font-semibold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-brand-500">
+            <option value="en-IN">🌐 English</option>
+            <option value="kn-IN">ಕನ್ನಡ (Kannada)</option>
+            <option value="hi-IN">हिन्दी (Hindi)</option>
+            <option value="te-IN">తెలుగు (Telugu)</option>
+            <option value="ta-IN">தமிழ் (Tamil)</option>
+            <option value="mr-IN">मराठी (Marathi)</option>
+          </select>
+
           <button id="themeToggle" class="touch-target p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition" aria-label="Toggle Theme">
             <span id="themeIcon" class="text-xl">🌙</span>
           </button>
 
-          <button id="mobileMenuBtn" class="md:hidden touch-target p-2 text-slate-700 dark:text-slate-200" aria-label="Open navigation menu">
+          <button id="mobileMenuBtn" class="lg:hidden touch-target p-2 text-slate-700 dark:text-slate-200" aria-label="Open navigation menu">
             <span class="text-2xl">☰</span>
           </button>
         </div>
@@ -138,13 +153,17 @@
     </div>
 
     <!-- Mobile Dropdown -->
-    <div id="mobileDropdown" class="hidden md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-3 space-y-1">
-      <a href="#home" data-target="home" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">Home</a>
-      <a href="#about" data-target="about" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">About</a>
-      <a href="#crop" data-target="crop" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">Crop Info</a>
-      <a href="#disease" data-target="disease" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">Disease Detection</a>
-      <a href="#weather" data-target="weather" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">Weather</a>
-      <a href="#market" data-target="market" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">Market Prices</a>
+    <div id="mobileDropdown" class="hidden lg:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-3 space-y-1 max-h-[80vh] overflow-y-auto">
+      <a href="#home" data-target="home" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">🏠 Home</a>
+      <a href="#crop" data-target="crop" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">🌿 Crop Info</a>
+      <a href="#disease" data-target="disease" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">🔬 Disease Detection</a>
+      <a href="#weather" data-target="weather" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">🌤️ Weather Forecast</a>
+      <a href="#market" data-target="market" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">📈 Market Prices</a>
+      <a href="#equipment" data-target="equipment" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">🚜 Equipment Rentals</a>
+      <a href="#calculator" data-target="calculator" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">🧪 NPK & Spray Calculator</a>
+      <a href="#soil" data-target="soil" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">🗺️ Soil Health & Map</a>
+      <a href="#buyers" data-target="buyers" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">🤝 Direct Buyers (B2B)</a>
+      <a href="#about" data-target="about" class="nav-link block px-3 py-2.5 rounded-lg text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">ℹ️ About</a>
     </div>
   </header>
 
@@ -153,7 +172,7 @@
 
     <!-- PAGE 1: HOME -->
     <section id="page-home" class="page-section active">
-      <div class="text-center max-w-3xl mx-auto py-8 sm:py-16">
+      <div class="text-center max-w-3xl mx-auto py-8 sm:py-14">
         <span class="inline-block px-3.5 py-1 text-xs font-bold tracking-widest text-brand-700 dark:text-brand-300 uppercase bg-brand-100 dark:bg-brand-900/60 rounded-full mb-4">
           SMART FARMING • HEALTHIER HARVESTS
         </span>
@@ -161,7 +180,7 @@
           Smart Farming,<br><em class="not-italic text-brand-600 dark:text-brand-500 underline decoration-brand-300 decoration-4">Better Future.</em>
         </h1>
         <p class="text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed mb-8">
-          AgriTech empowers farmers to explore Indian crop guidance, diagnose leaf health with AI, check live weather, and track daily Mandi market prices — all in one web application.
+          AgriTech empowers Indian farmers with crop intelligence, AI leaf diagnostics, hyper-local weather, live Mandi rates, tractor rentals, precision NPK dosing, soil mapping, direct B2B buyers, and native voice navigation.
         </p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
           <button class="w-full sm:w-auto px-6 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition nav-link" data-target="crop">
@@ -173,30 +192,54 @@
         </div>
       </div>
 
-      <!-- Feature Cards -->
+      <!-- 8 Feature Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 my-8">
         <a href="#crop" data-target="crop" class="nav-link block p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md transition group">
           <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">🌿</div>
           <h3 class="text-lg font-bold text-slate-900 dark:text-white">Crop Info</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Explore ideal soil, climate, and seasons for Indian crops.</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Ideal soil, climate, and live rates for Indian crops.</p>
         </a>
 
         <a href="#disease" data-target="disease" class="nav-link block p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md transition group">
           <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">🔬</div>
           <h3 class="text-lg font-bold text-slate-900 dark:text-white">Disease Detection</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Snap or upload leaf photos for instant AI health diagnosis.</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Snap or upload leaf photos for instant AI diagnosis.</p>
         </a>
 
         <a href="#weather" data-target="weather" class="nav-link block p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md transition group">
           <div class="w-12 h-12 rounded-xl bg-sky-100 dark:bg-sky-900/50 text-sky-600 dark:text-sky-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">🌤️</div>
           <h3 class="text-lg font-bold text-slate-900 dark:text-white">Weather Forecast</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Live city & village forecasts with sunrise & sunset times.</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Live city & GPS forecasts with sunrise & sunset.</p>
         </a>
 
         <a href="#market" data-target="market" class="nav-link block p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md transition group">
           <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">📈</div>
           <h3 class="text-lg font-bold text-slate-900 dark:text-white">Market Prices</h3>
           <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Track daily wholesale Mandi rates across India.</p>
+        </a>
+
+        <a href="#equipment" data-target="equipment" class="nav-link block p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md transition group">
+          <div class="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">🚜</div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white">Equipment Rentals</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Rent tractors, harvesters & solar pumps per hour/acre.</p>
+        </a>
+
+        <a href="#calculator" data-target="calculator" class="nav-link block p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md transition group">
+          <div class="w-12 h-12 rounded-xl bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">🧪</div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white">NPK Calculator</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Exact Urea, DAP, MOP & spray tank mix ratios.</p>
+        </a>
+
+        <a href="#soil" data-target="soil" class="nav-link block p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md transition group">
+          <div class="w-12 h-12 rounded-xl bg-yellow-100 dark:bg-yellow-900/50 text-yellow-600 dark:text-yellow-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">🗺️</div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white">Soil Health & Map</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Pin your field and log Soil Health Card values.</p>
+        </a>
+
+        <a href="#buyers" data-target="buyers" class="nav-link block p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md transition group">
+          <div class="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">🤝</div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white">Direct Buyers</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Sell directly to wholesalers, processors & retail chains.</p>
         </a>
       </div>
     </section>
@@ -213,17 +256,17 @@
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700">
           <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">🎯 Our Mission</h2>
           <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
-            Our mission is to make farming knowledge simple, fast, and accessible on any device. From everyday smartphones to desktop displays, AgriTech delivers crop cultivation guides, AI leaf diagnostics, live weather updates, and daily commodity prices.
+            Our mission is to make precision agriculture simple, fast, and accessible on any device in every farmer's native language. AgriTech unites crop cultivation guides, AI leaf diagnostics, live weather updates, daily Mandi prices, machinery sharing, NPK calculators, soil mapping, direct B2B buyers, and voice assistance.
           </p>
         </div>
 
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700">
-          <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">📋 Core Features</h2>
+          <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">📋 Platform Capabilities</h2>
           <ul class="space-y-3 text-slate-600 dark:text-slate-300">
-            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Installable mobile-ready web application with dark mode support.</li>
-            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Searchable All-India crop directory synced with daily market commodities.</li>
-            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Camera and gallery-based plant leaf scanning and AI disease detection.</li>
-            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Real-time city/GPS weather forecasts and daily Mandi market rates.</li>
+            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Multilingual UI & hands-free voice assistant in Kannada, Hindi, Telugu, Tamil, Marathi, and English.</li>
+            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Searchable All-India crop directory synced with daily Agmarknet prices.</li>
+            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Camera & gallery plant leaf scanning, NPK dosage calculator, and interactive Soil Health Card mapping.</li>
+            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Peer-to-peer machinery rental marketplace and direct B2B buyer lead board.</li>
           </ul>
         </div>
       </div>
@@ -238,12 +281,10 @@
           <p class="text-slate-600 dark:text-slate-300 mt-2 max-w-xl mx-auto">Explore growing conditions, seasons, and soil requirements across major Indian crops.</p>
         </div>
 
-        <!-- Search Bar -->
         <div class="mb-6 max-w-xl mx-auto">
           <input type="text" id="cropSearchInput" onkeyup="filterCropDirectory()" placeholder="🔍 Search crops (e.g., Arecanut, Rice, Wheat, Haldi, Cotton, Tomato)..." class="w-full px-4 py-3.5 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none transition shadow-sm">
         </div>
 
-        <!-- Category Filter Pills -->
         <div class="flex flex-wrap justify-center gap-2 mb-10">
           <button onclick="filterCategory('all', event)" class="category-btn px-4 py-2 rounded-full font-semibold text-sm bg-emerald-600 text-white shadow-sm transition">All Crops</button>
           <button onclick="filterCategory('cereal', event)" class="category-btn px-4 py-2 rounded-full font-semibold text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">Cereals & Millets</button>
@@ -254,7 +295,6 @@
           <button onclick="filterCategory('horticulture', event)" class="category-btn px-4 py-2 rounded-full font-semibold text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">Horticulture</button>
         </div>
 
-        <!-- Dynamic Crops Grid -->
         <div id="cropsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       </div>
     </section>
@@ -289,7 +329,6 @@
             <button id="retakeBtn" class="w-full sm:w-auto px-6 py-3 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white font-bold rounded-xl hover:bg-slate-300 transition hidden">Reset</button>
           </div>
 
-          <!-- Inline Diagnosis Result Card -->
           <div id="diagnosisResultCard" class="hidden mt-6 p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-left">
             <p class="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Analysis Result</p>
             <h3 id="resultDiagnosis" class="text-xl font-extrabold text-slate-900 dark:text-white mt-1">--</h3>
@@ -297,7 +336,6 @@
           </div>
         </div>
 
-        <!-- Recent Scans History -->
         <div class="mt-8 bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
           <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Recent Leaf Scans</h2>
           <div id="scanHistoryList" class="space-y-3 text-sm text-slate-500 dark:text-slate-400">
@@ -312,7 +350,6 @@
       <div class="max-w-5xl mx-auto py-4">
         <div class="bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-700 rounded-3xl shadow-xl p-6 sm:p-10 text-white relative">
           
-          <!-- Top Header & City Search Bar -->
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 relative z-20">
             <div>
               <span class="px-3 py-1 text-xs font-bold tracking-wider uppercase bg-white/20 backdrop-blur-md rounded-full">Live Forecast</span>
@@ -324,19 +361,13 @@
                 <input type="text" id="citySearchInput" autocomplete="off" placeholder="Search any city or town..." class="w-full pl-11 pr-20 py-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/50 transition shadow-inner">
                 <span class="absolute left-4 top-3 text-lg">🔍</span>
                 <button id="citySearchBtn" class="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-white/25 hover:bg-white/35 rounded-full font-bold text-sm transition backdrop-blur-md">Find</button>
-
-                <!-- Live Autocomplete Suggestions Dropdown -->
                 <div id="citySuggestions" class="hidden absolute left-0 right-0 mt-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl shadow-xl overflow-hidden z-50 border border-slate-200 dark:border-slate-700 max-h-60 overflow-y-auto"></div>
               </div>
-
               <button id="gpsWeatherBtn" title="Use My Current Location" class="p-3 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 backdrop-blur-md transition text-lg shadow-sm shrink-0">📍</button>
             </div>
           </div>
 
-          <!-- Responsive Main Content: Side-by-side on Laptop, Stacked on Mobile -->
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
-            
-            <!-- Left Column: Main Temperature Hero -->
             <div class="lg:col-span-5 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 text-center flex flex-col items-center justify-center shadow-lg">
               <h2 id="weatherCity" class="text-2xl sm:text-3xl font-bold tracking-wide drop-shadow-md">Loading...</h2>
               <p id="weatherCondition" class="text-sky-100 text-lg mt-1 font-medium capitalize">Fetching live weather</p>
@@ -351,7 +382,6 @@
               </div>
             </div>
 
-            <!-- Right Column: 6 Weather Metrics Grid -->
             <div class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-4">
               <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-5 flex flex-col justify-center shadow-lg">
                 <span class="text-white/80 text-xs font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">💨 Wind</span>
@@ -378,7 +408,6 @@
                 <span id="weatherSunset" class="text-xl sm:text-2xl font-semibold">--:--</span>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -418,7 +447,216 @@
       </div>
     </section>
 
+    <!-- PAGE 7: EQUIPMENT & MACHINERY RENTAL MARKETPLACE -->
+    <section id="page-equipment" class="page-section">
+      <div class="max-w-6xl mx-auto py-8">
+        <div class="text-center mb-8">
+          <span class="px-3 py-1 text-xs font-bold text-orange-700 dark:text-orange-300 bg-orange-100 dark:bg-orange-900/50 rounded-full">UBER FOR TRACTORS</span>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2">Equipment & Machinery Rental</h1>
+          <p class="text-slate-600 dark:text-slate-300 mt-2">Rent tractors, harvesters, rotavators, and solar pumps directly from nearby farmers.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div class="lg:col-span-4 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm h-fit">
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-4">🚜 List Your Equipment</h2>
+            <form id="equipmentForm" class="space-y-3">
+              <input type="text" id="eqName" required placeholder="Machine Name (e.g., Mahindra 575 DI)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+              <select id="eqType" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+                <option value="Tractor">Tractor</option>
+                <option value="Rotavator">Rotavator</option>
+                <option value="Harvester">Harvester</option>
+                <option value="Solar Pump">Solar Pump</option>
+                <option value="Drone Sprayer">Drone Sprayer</option>
+              </select>
+              <input type="text" id="eqLocation" required placeholder="Location (e.g., Mandya, Karnataka)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+              <div class="grid grid-cols-2 gap-2">
+                <input type="number" id="eqRate" required placeholder="Rate (₹)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+                <select id="eqUnit" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+                  <option value="Hour">Per Hour</option>
+                  <option value="Acre">Per Acre</option>
+                  <option value="Day">Per Day</option>
+                </select>
+              </div>
+              <input type="text" id="eqOwner" required placeholder="Owner Name" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+              <input type="tel" id="eqPhone" required placeholder="Phone Number" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+              <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                <input type="checkbox" id="eqOperator" checked class="rounded text-brand-600"> Driver / Operator Included
+              </label>
+              <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition">Post Listing</button>
+            </form>
+          </div>
+
+          <div id="equipmentGrid" class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 8: FERTILIZER & PESTICIDE DOSAGE CALCULATOR -->
+    <section id="page-calculator" class="page-section">
+      <div class="max-w-4xl mx-auto py-8">
+        <div class="text-center mb-8">
+          <span class="px-3 py-1 text-xs font-bold text-teal-700 dark:text-teal-300 bg-teal-100 dark:bg-teal-900/50 rounded-full">PRECISION INPUTS</span>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2">Fertilizer & Spray Dosage Calculator</h1>
+          <p class="text-slate-600 dark:text-slate-300 mt-2">Calculate exact Urea, DAP, MOP quantities and spray tank mix ratios to prevent crop burn.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Select Crop</label>
+              <select id="calcCrop" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+                <option value="rice">Rice (Paddy)</option>
+                <option value="wheat">Wheat (Gehun)</option>
+                <option value="arecanut">Arecanut (Supari)</option>
+                <option value="tomato">Tomato</option>
+                <option value="onion">Onion</option>
+                <option value="cotton">Cotton</option>
+                <option value="sugarcane">Sugarcane</option>
+                <option value="potato">Potato</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Farm Area (Acres)</label>
+              <input type="number" id="calcAcres" value="1" min="0.1" step="0.1" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Spray Treatment Type</label>
+              <select id="calcSpray" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+                <option value="neem">Neem Oil (Organic Pest Control - 3 ml/L)</option>
+                <option value="fungicide">Mancozeb Fungicide (Blight/Spot - 2 g/L)</option>
+                <option value="insecticide">Imidacloprid (Sucking Pests - 0.5 ml/L)</option>
+              </select>
+            </div>
+            <button id="calculateDosageBtn" class="w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-md transition">Calculate Exact Dosage</button>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">🧪 Recommended Fertilizer Dosage</h3>
+              <div class="grid grid-cols-3 gap-3 text-center mb-6">
+                <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800">
+                  <p class="text-xs font-bold text-emerald-700 dark:text-emerald-300">UREA (46% N)</p>
+                  <p id="resUrea" class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">-- kg</p>
+                </div>
+                <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800">
+                  <p class="text-xs font-bold text-amber-700 dark:text-amber-300">DAP (18-46-0)</p>
+                  <p id="resDap" class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">-- kg</p>
+                </div>
+                <div class="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-800">
+                  <p class="text-xs font-bold text-purple-700 dark:text-purple-300">MOP (60% K)</p>
+                  <p id="resMop" class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">-- kg</p>
+                </div>
+              </div>
+
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">💧 Spray Tank Mix (15L Knapsack)</h3>
+              <div id="resSprayBox" class="p-4 rounded-xl bg-sky-50 dark:bg-sky-950/50 border border-sky-200 dark:border-sky-800 text-sm text-slate-700 dark:text-slate-200">
+                Select crop and acreage, then click Calculate.
+              </div>
+            </div>
+            <p class="text-xs text-slate-400 mt-4">Tip: Apply Urea in 2–3 split doses rather than all at once to minimize leaching.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 9: SOIL HEALTH CARD & FIELD MAPPING -->
+    <section id="page-soil" class="page-section">
+      <div class="max-w-6xl mx-auto py-8">
+        <div class="text-center mb-8">
+          <span class="px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/50 rounded-full">PRECISION AGRICULTURE</span>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2">Soil Health Card & Field Mapping</h1>
+          <p class="text-slate-600 dark:text-slate-300 mt-2">Pin your farm on the map and enter your Soil Health Card values for custom crop recommendations.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-6 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <p class="text-xs font-bold text-slate-500 uppercase mb-2">📍 Click on the map to pin your field</p>
+            <div id="soilMap" class="w-full h-80 rounded-xl z-10"></div>
+            <p id="pinnedCoords" class="text-xs text-slate-500 mt-2">Selected Coordinates: Bengaluru (12.9716, 77.5946)</p>
+          </div>
+
+          <div class="lg:col-span-6 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <form id="soilCardForm" class="space-y-3">
+              <input type="text" id="soilFieldName" required placeholder="Field / Plot Name (e.g., North Borewell Plot)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div>
+                  <label class="text-xs font-bold text-slate-500">Soil pH</label>
+                  <input type="number" id="soilPh" step="0.1" value="6.8" required class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-500">Organic C (%)</label>
+                  <input type="number" id="soilOc" step="0.05" value="0.65" required class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-500">Nitrogen (kg/ha)</label>
+                  <input type="number" id="soilN" value="310" required class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-500">Phosphorus</label>
+                  <input type="number" id="soilP" value="18" required class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-500">Potassium</label>
+                  <input type="number" id="soilK" value="220" required class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+                </div>
+              </div>
+              <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition">Analyze & Save Soil Card</button>
+            </form>
+
+            <div id="soilRecommendation" class="hidden mt-5 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-sm space-y-1.5"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 10: CONTRACT FARMING & DIRECT BUYER CONNECT -->
+    <section id="page-buyers" class="page-section">
+      <div class="max-w-6xl mx-auto py-8">
+        <div class="text-center mb-8">
+          <span class="px-3 py-1 text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-900/50 rounded-full">B2B DIRECT CONNECT</span>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2">Contract Farming & Direct Buyer Board</h1>
+          <p class="text-slate-600 dark:text-slate-300 mt-2">Connect directly with wholesalers, food processors, and retail chains — zero middlemen.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div class="lg:col-span-4 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm h-fit">
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-4">🤝 Post a Buy Request</h2>
+            <form id="buyerLeadForm" class="space-y-3">
+              <input type="text" id="leadBuyer" required placeholder="Company / Buyer Name" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+              <select id="leadType" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+                <option value="Wholesaler">Wholesaler</option>
+                <option value="Retail Chain">Retail Chain</option>
+                <option value="Food Processor">Food Processor</option>
+                <option value="Restaurant Chain">Restaurant Chain</option>
+                <option value="Exporter">Exporter</option>
+              </select>
+              <input type="text" id="leadCrop" required placeholder="Crop Needed (e.g., Organic Tomatoes)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+              <div class="grid grid-cols-2 gap-2">
+                <input type="text" id="leadQty" required placeholder="Qty (e.g., 5 Tonnes)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+                <input type="text" id="leadPrice" required placeholder="Offer (e.g., ₹2,800/Qtl)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+              </div>
+              <input type="text" id="leadLocation" required placeholder="Location (e.g., Bengaluru, Karnataka)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+              <input type="tel" id="leadContact" required placeholder="Contact Phone" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm">
+              <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition">Post Buy Request</button>
+            </form>
+          </div>
+
+          <div id="buyerLeadsGrid" class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+        </div>
+      </div>
+    </section>
+
   </main>
+
+  <!-- FLOATING VOICE ASSISTANT WIDGET -->
+  <div id="voiceWidget" class="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-2">
+    <div id="voiceStatusBubble" class="hidden max-w-xs px-4 py-2.5 rounded-2xl bg-slate-900/95 text-white text-xs sm:text-sm shadow-xl border border-slate-700">
+      <p id="voiceStatusText" class="font-medium">Listening...</p>
+    </div>
+    <button id="voiceAssistantBtn" title="Tap to Speak" class="w-14 h-14 rounded-full bg-brand-600 hover:bg-brand-700 text-white shadow-2xl flex items-center justify-center text-2xl transition transform hover:scale-105 active:scale-95 ring-4 ring-brand-500/30">
+      🎙️
+    </button>
+  </div>
 
   <!-- Footer -->
   <footer class="border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
@@ -447,20 +685,24 @@
       const pages = document.querySelectorAll('.page-section');
       const mobileDropdown = document.getElementById('mobileDropdown');
 
+      function navigateToPage(target) {
+        pages.forEach(p => p.classList.remove('active'));
+        const targetPage = document.getElementById('page-' + target);
+        if (targetPage) targetPage.classList.add('active');
+        if (target === 'soil') {
+          setTimeout(() => { initSoilMap(); if (soilMap) soilMap.invalidateSize(); }, 200);
+        }
+        if (mobileDropdown && !mobileDropdown.classList.contains('hidden')) {
+          mobileDropdown.classList.add('hidden');
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
       navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
           e.preventDefault();
           const target = e.currentTarget.getAttribute('data-target');
-          if (!target) return;
-
-          pages.forEach(p => p.classList.remove('active'));
-          const targetPage = document.getElementById('page-' + target);
-          if (targetPage) targetPage.classList.add('active');
-
-          if (mobileDropdown && !mobileDropdown.classList.contains('hidden')) {
-            mobileDropdown.classList.add('hidden');
-          }
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          if (target) navigateToPage(target);
         });
       });
 
@@ -484,7 +726,6 @@
       // 2. INDIAN CROPS DIRECTORY (AUTO-SYNCED WITH MARKET)
       // ==========================================
       const FALLBACK_CROPS = [
-        // Cereals & Millets
         { name: "Rice (Paddy)", keywords: "rice paddy dhan", category: "cereal", season: "KHARIF • CEREAL", emoji: "🌾", climate: "Hot & Humid (20°C–37°C)", soil: "Clayey loams retaining standing water.", color: "emerald" },
         { name: "Wheat (Gehun)", keywords: "wheat gehun", category: "cereal", season: "RABI • CEREAL", emoji: "🌾", climate: "Cool Winter (10°C–15°C)", soil: "Well-drained fertile loams.", color: "amber" },
         { name: "Maize (Makka)", keywords: "maize makka corn", category: "cereal", season: "KHARIF • CEREAL", emoji: "🌽", climate: "Warm Climate (21°C–27°C)", soil: "Old alluvial soil with good drainage.", color: "emerald" },
@@ -492,26 +733,22 @@
         { name: "Bajra (Pearl Millet)", keywords: "bajra pearl millet", category: "cereal", season: "KHARIF • MILLET", emoji: "🌾", climate: "Hot & Dry (25°C–35°C)", soil: "Sandy loams and shallow black soils.", color: "amber" },
         { name: "Ragi (Finger Millet)", keywords: "ragi finger millet nachni", category: "cereal", season: "KHARIF • MILLET", emoji: "🌾", climate: "Moderate (20°C–30°C)", soil: "Red, black, sandy, and loamy soils.", color: "emerald" },
         { name: "Barley (Jau)", keywords: "barley jau", category: "cereal", season: "RABI • CEREAL", emoji: "🌾", climate: "Cool & Dry (12°C–18°C)", soil: "Sandy loam to medium loam soils.", color: "amber" },
-        // Pulses
         { name: "Gram (Chana)", keywords: "gram chana chickpea pulses", category: "pulse", season: "RABI • PULSE", emoji: "🌱", climate: "Cool Climate (20°C–25°C)", soil: "Light loamy or heavy clay soils.", color: "amber" },
         { name: "Pigeon Pea (Tur / Arhar)", keywords: "pigeon pea tur arhar toor pulses", category: "pulse", season: "KHARIF • PULSE", emoji: "🫘", climate: "Warm & Moist (26°C–30°C)", soil: "Well-drained loamy soils.", color: "emerald" },
         { name: "Moong (Green Gram)", keywords: "moong mung green gram pulses", category: "pulse", season: "KHARIF / ZAID • PULSE", emoji: "🫘", climate: "Warm (25°C–35°C)", soil: "Well-drained sandy loams.", color: "emerald" },
         { name: "Urad (Black Gram)", keywords: "urad black gram pulses", category: "pulse", season: "KHARIF • PULSE", emoji: "🫘", climate: "Hot & Humid (25°C–35°C)", soil: "Heavy clay or loamy soils.", color: "emerald" },
         { name: "Masoor (Red Lentil)", keywords: "masoor lentil dal pulses", category: "pulse", season: "RABI • PULSE", emoji: "🫘", climate: "Cool Winter (18°C–25°C)", soil: "Alluvial and well-drained loams.", color: "amber" },
-        // Oilseeds
         { name: "Groundnut (Mungfali)", keywords: "groundnut peanut mungfali oilseed", category: "oilseed", season: "KHARIF • OILSEED", emoji: "🥜", climate: "Warm Climate (20°C–30°C)", soil: "Sandy loams and well-drained soils.", color: "amber" },
         { name: "Soybean", keywords: "soybean soya oilseed", category: "oilseed", season: "KHARIF • OILSEED", emoji: "🌿", climate: "Warm & Humid (20°C–30°C)", soil: "Fertile alluvial or clay-loam soils.", color: "emerald" },
         { name: "Mustard (Sarson)", keywords: "mustard sarson rai oilseed", category: "oilseed", season: "RABI • OILSEED", emoji: "🌼", climate: "Cool & Dry (15°C–25°C)", soil: "Light to heavy loamy soils.", color: "amber" },
         { name: "Sunflower (Surajmukhi)", keywords: "sunflower surajmukhi oilseed", category: "oilseed", season: "ALL SEASON • OILSEED", emoji: "🌻", climate: "Moderate (20°C–25°C)", soil: "Deep loamy and black cotton soils.", color: "amber" },
         { name: "Sesame (Til)", keywords: "sesame til gingelly oilseed", category: "oilseed", season: "KHARIF • OILSEED", emoji: "🌱", climate: "Warm (25°C–30°C)", soil: "Well-drained light sandy loams.", color: "emerald" },
         { name: "Castor (Arandi)", keywords: "castor arandi oilseed", category: "oilseed", season: "KHARIF • OILSEED", emoji: "🌿", climate: "Warm & Dry (20°C–30°C)", soil: "Deep sandy loam and red soils.", color: "emerald" },
-        // Commercial & Cash Crops
         { name: "Arecanut (Supari / Betelnut)", keywords: "arecanut betelnut supari adike commercial plantation", category: "commercial", season: "PERENNIAL • PLANTATION", emoji: "🌴", climate: "Warm & Humid (14°C–36°C)", soil: "Well-drained gravelly laterite and red clay loam soils.", color: "purple" },
         { name: "Cotton (Kapas)", keywords: "cotton kapas commercial", category: "commercial", season: "KHARIF • COMMERCIAL", emoji: "☁️", climate: "High Temp (21°C–30°C)", soil: "Black cotton soil (Regur) of Deccan.", color: "purple" },
         { name: "Sugarcane (Ganna)", keywords: "sugarcane ganna commercial", category: "commercial", season: "ANNUAL • COMMERCIAL", emoji: "🎋", climate: "Hot & Humid (20°C–35°C)", soil: "Deep rich loamy soils with high moisture.", color: "purple" },
         { name: "Jute (Pat)", keywords: "jute pat golden fibre commercial", category: "commercial", season: "KHARIF • COMMERCIAL", emoji: "🌾", climate: "Hot & Wet (24°C–37°C)", soil: "New alluvial soil of river deltas.", color: "purple" },
         { name: "Natural Rubber", keywords: "rubber plantation commercial", category: "commercial", season: "PERENNIAL • COMMERCIAL", emoji: "🌳", climate: "Equatorial Humid (25°C–35°C)", soil: "Deep well-drained laterite soils.", color: "purple" },
-        // Spices & Plantation
         { name: "Tea (Chai)", keywords: "tea chai plantation spice", category: "spice", season: "PERENNIAL • PLANTATION", emoji: "🍵", climate: "Cool & Humid (15°C–30°C)", soil: "Deep acidic hill-slope loams.", color: "rose" },
         { name: "Coffee", keywords: "coffee arabica robusta plantation", category: "spice", season: "PERENNIAL • PLANTATION", emoji: "☕", climate: "Cool Tropical (15°C–28°C)", soil: "Rich, well-drained forest loams.", color: "rose" },
         { name: "Turmeric (Haldi)", keywords: "turmeric haldi spice", category: "spice", season: "KHARIF • SPICE", emoji: "🫚", climate: "Warm & Humid (20°C–30°C)", soil: "Friable, well-drained loamy soils.", color: "rose" },
@@ -520,7 +757,6 @@
         { name: "Cardamom (Elaichi)", keywords: "cardamom elaichi spice", category: "spice", season: "PERENNIAL • SPICE", emoji: "🌿", climate: "Cool & Wet (10°C–35°C)", soil: "Acidic, humus-rich forest loams.", color: "rose" },
         { name: "Red Chilli (Mirchi)", keywords: "chilli mirchi pepper spice", category: "spice", season: "KHARIF / RABI • SPICE", emoji: "🌶️", climate: "Warm & Humid (20°C–30°C)", soil: "Well-drained black or loamy soils.", color: "rose" },
         { name: "Cumin (Jeera)", keywords: "cumin jeera spice", category: "spice", season: "RABI • SPICE", emoji: "🌱", climate: "Cool & Dry (15°C–25°C)", soil: "Well-drained sandy loam soils.", color: "rose" },
-        // Horticulture
         { name: "Potato (Aloo)", keywords: "potato aloo vegetable horticulture", category: "horticulture", season: "RABI • HORTICULTURE", emoji: "🥔", climate: "Cool Weather (15°C–20°C)", soil: "Loose, friable sandy loams rich in humus.", color: "blue" },
         { name: "Tomato (Tamatar)", keywords: "tomato tamatar vegetable horticulture", category: "horticulture", season: "ALL SEASON • HORTICULTURE", emoji: "🍅", climate: "Moderate (18°C–25°C)", soil: "Well-drained sandy loam with organic matter.", color: "blue" },
         { name: "Onion (Pyaaz)", keywords: "onion pyaaz kanda vegetable horticulture", category: "horticulture", season: "KHARIF / RABI • HORTICULTURE", emoji: "🧅", climate: "Mild Climate (13°C–25°C)", soil: "Deep friable alluvial and loamy soils.", color: "blue" },
@@ -631,55 +867,33 @@
           allCropsList = [...FALLBACK_CROPS];
         }
         renderCrops(allCropsList);
-        if (latestMarketPrices.length > 0) {
-          syncMarketCropsToDirectory(latestMarketPrices);
-        }
+        if (latestMarketPrices.length > 0) syncMarketCropsToDirectory(latestMarketPrices);
       }
 
       window.activeCategory = 'all';
-
       window.filterCategory = function(category, evt) {
         window.activeCategory = category;
-
-        const buttons = document.querySelectorAll('.category-btn');
-        buttons.forEach(btn => {
+        document.querySelectorAll('.category-btn').forEach(btn => {
           btn.classList.remove('bg-emerald-600', 'text-white');
           btn.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
         });
-
-        const clickedBtn = evt ? evt.currentTarget : (window.event ? window.event.target : null);
-        if (clickedBtn && clickedBtn.classList) {
+        const clickedBtn = evt ? evt.currentTarget : null;
+        if (clickedBtn) {
           clickedBtn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
           clickedBtn.classList.add('bg-emerald-600', 'text-white');
         }
-
         window.applyFilters();
       };
-
-      window.filterCropDirectory = function() {
-        window.applyFilters();
-      };
-
+      window.filterCropDirectory = function() { window.applyFilters(); };
       window.applyFilters = function() {
         const searchInput = document.getElementById('cropSearchInput');
         const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
-        const cards = document.querySelectorAll('.crop-card');
-
-        cards.forEach(card => {
-          const cardCategory = card.getAttribute('data-category');
-          const cardName = card.getAttribute('data-name') || '';
-
-          const matchesCategory = (window.activeCategory === 'all' || cardCategory === window.activeCategory);
-          const matchesSearch = cardName.includes(searchQuery);
-
-          if (matchesCategory && matchesSearch) {
-            card.classList.remove('hidden');
-          } else {
-            card.classList.add('hidden');
-          }
+        document.querySelectorAll('.crop-card').forEach(card => {
+          const matchesCategory = (window.activeCategory === 'all' || card.getAttribute('data-category') === window.activeCategory);
+          const matchesSearch = (card.getAttribute('data-name') || '').includes(searchQuery);
+          card.classList.toggle('hidden', !(matchesCategory && matchesSearch));
         });
       };
-
       loadCropsDirectory();
 
       // ==========================================
@@ -710,15 +924,12 @@
       async function loadScanHistory() {
         const historyContainer = document.getElementById('scanHistoryList');
         if (!historyContainer) return;
-
         try {
           const response = await fetch(`${API_BASE_URL}/scan-history?limit=5`, { cache: 'no-store' });
           if (!response.ok) return;
           const result = await response.json();
           const scans = result.data || [];
-
           if (scans.length === 0) return;
-
           historyContainer.innerHTML = scans.map(scan => `
             <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-700">
               <div>
@@ -728,9 +939,7 @@
               <span class="px-2.5 py-1 text-xs font-bold bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-full">${scan.confidence}</span>
             </div>
           `).join('');
-        } catch (err) {
-          // Keep default message if server is offline
-        }
+        } catch (err) {}
       }
 
       if (startCameraBtn) {
@@ -742,7 +951,6 @@
             cameraPlaceholder.classList.add('hidden');
             photoPreview.classList.add('hidden');
             resultCard.classList.add('hidden');
-
             startCameraBtn.classList.add('hidden');
             uploadLeafBtn.classList.add('hidden');
             takePhotoBtn.classList.remove('hidden');
@@ -753,16 +961,13 @@
           }
         });
 
-        uploadLeafBtn.addEventListener('click', () => {
-          leafFileInput.click();
-        });
+        uploadLeafBtn.addEventListener('click', () => leafFileInput.click());
 
         leafFileInput.addEventListener('change', (e) => {
           const file = e.target.files[0];
           if (!file) return;
           stopCameraStream();
           capturedBlob = file;
-
           const reader = new FileReader();
           reader.onload = (ev) => {
             photoPreview.src = ev.target.result;
@@ -770,7 +975,6 @@
             cameraPlaceholder.classList.add('hidden');
             photoPreview.classList.remove('hidden');
             resultCard.classList.add('hidden');
-
             startCameraBtn.classList.add('hidden');
             uploadLeafBtn.classList.add('hidden');
             takePhotoBtn.classList.add('hidden');
@@ -784,14 +988,11 @@
           canvas.width = video.videoWidth;
           canvas.height = video.videoHeight;
           canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-
           photoPreview.src = canvas.toDataURL('image/jpeg');
           video.classList.add('hidden');
           photoPreview.classList.remove('hidden');
-
           canvas.toBlob((blob) => { capturedBlob = blob; }, 'image/jpeg', 0.9);
           stopCameraStream();
-
           takePhotoBtn.classList.add('hidden');
           analyzeCameraBtn.classList.remove('hidden');
           retakeBtn.classList.remove('hidden');
@@ -803,7 +1004,6 @@
           video.classList.add('hidden');
           cameraPlaceholder.classList.remove('hidden');
           resultCard.classList.add('hidden');
-
           analyzeCameraBtn.classList.add('hidden');
           retakeBtn.classList.add('hidden');
           takePhotoBtn.classList.add('hidden');
@@ -815,19 +1015,15 @@
 
         analyzeCameraBtn.addEventListener('click', async () => {
           if (!capturedBlob) return;
-
           const formData = new FormData();
           formData.append('file', capturedBlob, 'leaf_scan.jpg');
-
           const originalText = analyzeCameraBtn.textContent;
           analyzeCameraBtn.textContent = "Analyzing...";
           analyzeCameraBtn.disabled = true;
-
           try {
             const response = await fetch(`${API_BASE_URL}/analyze-leaf`, { method: 'POST', body: formData });
             if (!response.ok) throw new Error("Server error");
             const result = await response.json();
-
             document.getElementById('resultDiagnosis').textContent = result.diagnosis;
             document.getElementById('resultConfidence').textContent = `Confidence: ${result.confidence}`;
             resultCard.classList.remove('hidden');
@@ -840,7 +1036,6 @@
           }
         });
       }
-
       loadScanHistory();
 
       // ==========================================
@@ -859,7 +1054,6 @@
           let apiUrl = `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${encodeURIComponent(query)}&days=1&aqi=no`;
           let response = await fetch(apiUrl, { cache: 'no-store' });
 
-          // Fallback: resolve closest matching city/town via Search API
           if (!response.ok && !query.includes(',')) {
             const searchRes = await fetch(`https://api.weatherapi.com/v1/search.json?key=${WEATHER_API_KEY}&q=${encodeURIComponent(query)}`);
             if (searchRes.ok) {
@@ -872,7 +1066,6 @@
           }
 
           if (!response.ok) throw new Error('Weather error');
-
           const data = await response.json();
           const astro = data.forecast.forecastday[0].astro;
 
@@ -885,9 +1078,7 @@
           document.getElementById('weatherVis').textContent = `${data.current.vis_km} km`;
           document.getElementById('weatherSunrise').textContent = astro.sunrise;
           document.getElementById('weatherSunset').textContent = astro.sunset;
-
-          const iconUrl = `https:${data.current.condition.icon}`;
-          document.getElementById('weatherIcon').innerHTML = `<img src="${iconUrl}" alt="${data.current.condition.text}" class="w-32 h-32 mx-auto drop-shadow-2xl object-contain">`;
+          document.getElementById('weatherIcon').innerHTML = `<img src="https:${data.current.condition.icon}" alt="${data.current.condition.text}" class="w-32 h-32 mx-auto drop-shadow-2xl object-contain">`;
         } catch (error) {
           document.getElementById('weatherCity').textContent = "City Not Found";
           document.getElementById('weatherCondition').textContent = "Try selecting from suggestions or tap 📍";
@@ -903,44 +1094,30 @@
         citySearchInput.addEventListener('input', () => {
           clearTimeout(searchTimer);
           const q = citySearchInput.value.trim();
-          if (q.length < 2) {
-            citySuggestions.classList.add('hidden');
-            return;
-          }
-
+          if (q.length < 2) { citySuggestions.classList.add('hidden'); return; }
           searchTimer = setTimeout(async () => {
             try {
               const res = await fetch(`https://api.weatherapi.com/v1/search.json?key=${WEATHER_API_KEY}&q=${encodeURIComponent(q)}`);
               if (!res.ok) return;
               const cities = await res.json();
-
-              if (cities.length === 0) {
-                citySuggestions.classList.add('hidden');
-                return;
-              }
-
+              if (cities.length === 0) { citySuggestions.classList.add('hidden'); return; }
               citySuggestions.innerHTML = cities.map(c => `
                 <button type="button" class="w-full text-left px-4 py-2.5 text-sm hover:bg-sky-50 dark:hover:bg-slate-700 border-b border-slate-100 dark:border-slate-700 last:border-0 transition" data-coords="${c.lat},${c.lon}" data-label="${c.name}">
                   <span class="font-semibold">${c.name}</span>
                   <span class="text-xs text-slate-400 block">${c.region ? c.region + ', ' : ''}${c.country}</span>
                 </button>
               `).join('');
-
               citySuggestions.classList.remove('hidden');
-
               citySuggestions.querySelectorAll('button').forEach(btn => {
                 btn.addEventListener('click', () => {
                   citySearchInput.value = btn.getAttribute('data-label');
                   getWeatherData(btn.getAttribute('data-coords'));
                 });
               });
-            } catch (e) {
-              citySuggestions.classList.add('hidden');
-            }
+            } catch (e) { citySuggestions.classList.add('hidden'); }
           }, 300);
         });
 
-        // Close suggestions when clicking outside
         document.addEventListener('click', (e) => {
           if (!citySearchInput.contains(e.target) && !citySuggestions.contains(e.target)) {
             citySuggestions.classList.add('hidden');
@@ -949,35 +1126,20 @@
       }
 
       if (citySearchBtn && citySearchInput) {
-        citySearchBtn.addEventListener('click', () => {
-          const city = citySearchInput.value.trim();
-          if (city) getWeatherData(city);
-        });
-        citySearchInput.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') {
-            const city = e.target.value.trim();
-            if (city) getWeatherData(city);
-          }
-        });
+        citySearchBtn.addEventListener('click', () => { if (citySearchInput.value.trim()) getWeatherData(citySearchInput.value.trim()); });
+        citySearchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && e.target.value.trim()) getWeatherData(e.target.value.trim()); });
       }
 
       if (gpsWeatherBtn) {
         gpsWeatherBtn.addEventListener('click', () => {
-          if (!navigator.geolocation) {
-            alert("Geolocation is not supported by your browser.");
-            return;
-          }
+          if (!navigator.geolocation) { alert("Geolocation is not supported by your browser."); return; }
           document.getElementById('weatherCity').textContent = "Locating...";
           navigator.geolocation.getCurrentPosition(
             (pos) => getWeatherData(`${pos.coords.latitude},${pos.coords.longitude}`),
-            () => {
-              alert("Location access denied. Please allow location permissions or search manually.");
-              getWeatherData("Bengaluru");
-            }
+            () => { alert("Location access denied. Please search manually."); getWeatherData("Bengaluru"); }
           );
         });
       }
-
       getWeatherData("Bengaluru");
 
       // ==========================================
@@ -997,7 +1159,6 @@
       function renderMarketPrices(prices) {
         const tableBody = document.getElementById('marketTableBody');
         if (!tableBody) return;
-
         tableBody.innerHTML = prices.map(item => `
           <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
             <td class="p-4 font-semibold text-slate-700 dark:text-slate-200">
@@ -1011,7 +1172,6 @@
             </td>
           </tr>
         `).join('');
-
         syncMarketCropsToDirectory(prices);
       }
 
@@ -1020,38 +1180,28 @@
         if (tableBody) {
           tableBody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-500 dark:text-slate-400">Loading live All-India Mandi prices...</td></tr>`;
         }
-
-        // 1. Try backend first
         try {
           const response = await fetch(`${API_BASE_URL}/market-prices?limit=500`, { cache: 'no-store' });
           if (response.ok) {
             const result = await response.json();
             if (result.data && result.data.length > 0) {
               const hasArecanut = result.data.some(r => (r.commodity || '').toLowerCase().includes('arecanut'));
-              const finalData = hasArecanut ? result.data : [FALLBACK_PRICES[0], ...result.data];
-              renderMarketPrices(finalData);
+              renderMarketPrices(hasArecanut ? result.data : [FALLBACK_PRICES[0], ...result.data]);
               return;
             }
           }
-        } catch (err) {
-          // Proceed to direct live fetch
-        }
+        } catch (err) {}
 
-        // 2. Direct live fetch from data.gov.in (General 500 + Arecanut guaranteed)
         try {
           const generalUrl = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${DATA_GOV_API_KEY}&format=json&limit=500`;
           const arecanutUrl = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${DATA_GOV_API_KEY}&format=json&limit=20&filters[commodity]=Arecanut(Betelnut/Supari)`;
-
           const [generalRes, arecanutRes] = await Promise.all([
             fetch(generalUrl, { cache: 'no-store' }),
             fetch(arecanutUrl, { cache: 'no-store' })
           ]);
-
           const generalData = generalRes.ok ? await generalRes.json() : { records: [] };
           const arecanutData = arecanutRes.ok ? await arecanutRes.json() : { records: [] };
-
           const combined = [...(arecanutData.records || []), ...(generalData.records || [])];
-
           const records = combined.map(item => ({
             commodity: item.commodity || 'N/A',
             variety: item.variety || '',
@@ -1061,18 +1211,13 @@
             modal_price: item.modal_price || '--',
             arrival_date: item.arrival_date || 'Today'
           }));
-
           if (records.length > 0) {
             const hasArecanut = records.some(r => (r.commodity || '').toLowerCase().includes('arecanut'));
-            const finalData = hasArecanut ? records : [FALLBACK_PRICES[0], ...records];
-            renderMarketPrices(finalData);
+            renderMarketPrices(hasArecanut ? records : [FALLBACK_PRICES[0], ...records]);
             return;
           }
-        } catch (err) {
-          // Proceed to offline fallback
-        }
+        } catch (err) {}
 
-        // 3. Final offline fallback
         renderMarketPrices(FALLBACK_PRICES);
       }
 
@@ -1080,15 +1225,483 @@
         const input = document.getElementById('marketSearchInput');
         if (!input) return;
         const filter = input.value.toLowerCase();
-        const rows = document.querySelectorAll('#marketTableBody tr');
-
-        rows.forEach(row => {
-          const text = row.textContent.toLowerCase();
-          row.style.display = text.includes(filter) ? '' : 'none';
+        document.querySelectorAll('#marketTableBody tr').forEach(row => {
+          row.style.display = row.textContent.toLowerCase().includes(filter) ? '' : 'none';
         });
       };
-
       loadMarketPrices();
+
+      // ==========================================
+      // 6. EQUIPMENT RENTAL MARKETPLACE
+      // ==========================================
+      const FALLBACK_EQUIPMENT = [
+        { name: "Mahindra 575 DI Tractor (45 HP)", type: "Tractor", location: "Mandya, Karnataka", rate: 650, unit: "Hour", operator_included: true, owner: "Ramesh Gowda", phone: "+91 98450 11223" },
+        { name: "Shaktiman 6-Feet Rotavator", type: "Rotavator", location: "Nashik, Maharashtra", rate: 900, unit: "Acre", operator_included: true, owner: "Suresh Patil", phone: "+91 98220 44556" },
+        { name: "John Deere Combine Harvester", type: "Harvester", location: "Karnal, Haryana", rate: 1800, unit: "Acre", operator_included: true, owner: "Harpreet Singh", phone: "+91 98120 77889" },
+        { name: "5 HP Solar Water Pump (Portable)", type: "Solar Pump", location: "Shivamogga, Karnataka", rate: 300, unit: "Day", operator_included: false, owner: "Mahesh Naik", phone: "+91 94480 33445" }
+      ];
+      let equipmentList = [...FALLBACK_EQUIPMENT];
+
+      function renderEquipment(list) {
+        const grid = document.getElementById('equipmentGrid');
+        if (!grid) return;
+        grid.innerHTML = list.map(item => `
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="px-2.5 py-1 text-xs font-bold bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 rounded-full">${item.type}</span>
+                <span class="text-lg font-extrabold text-emerald-600">₹${item.rate}<span class="text-xs font-normal text-slate-400">/${item.unit}</span></span>
+              </div>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white">${item.name}</h3>
+              <p class="text-xs text-slate-500 mt-1">📍 ${item.location}</p>
+              <p class="text-xs text-slate-500 mt-1">${item.operator_included ? '✅ Operator / Driver Included' : '⚙️ Self-Operated'}</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">👤 ${item.owner}</span>
+              <a href="tel:${item.phone}" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-lg transition">Call Owner</a>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      async function loadEquipment() {
+        try {
+          const res = await fetch(`${API_BASE_URL}/equipment`, { cache: 'no-store' });
+          if (res.ok) {
+            const json = await res.json();
+            if (json.data && json.data.length > 0) equipmentList = json.data;
+          }
+        } catch (e) {}
+        renderEquipment(equipmentList);
+      }
+
+      const equipmentForm = document.getElementById('equipmentForm');
+      if (equipmentForm) {
+        equipmentForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const payload = {
+            name: document.getElementById('eqName').value,
+            type: document.getElementById('eqType').value,
+            location: document.getElementById('eqLocation').value,
+            rate: parseFloat(document.getElementById('eqRate').value),
+            unit: document.getElementById('eqUnit').value,
+            operator_included: document.getElementById('eqOperator').checked,
+            owner: document.getElementById('eqOwner').value,
+            phone: document.getElementById('eqPhone').value
+          };
+          equipmentList.unshift(payload);
+          renderEquipment(equipmentList);
+          equipmentForm.reset();
+          try {
+            await fetch(`${API_BASE_URL}/equipment`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+            });
+          } catch (err) {}
+        });
+      }
+      loadEquipment();
+
+      // ==========================================
+      // 7. FERTILIZER & PESTICIDE DOSAGE CALCULATOR
+      // ==========================================
+      const CROP_NPK_PER_ACRE = {
+        rice: { n: 48, p: 24, k: 16 },
+        wheat: { n: 48, p: 24, k: 16 },
+        arecanut: { n: 40, p: 16, k: 56 },
+        tomato: { n: 40, p: 30, k: 30 },
+        onion: { n: 40, p: 20, k: 20 },
+        cotton: { n: 32, p: 16, k: 16 },
+        sugarcane: { n: 100, p: 40, k: 40 },
+        potato: { n: 60, p: 32, k: 40 }
+      };
+
+      const SPRAY_SPECS = {
+        neem: { name: "Neem Oil (1500 ppm)", perLiter: 3, unit: "ml", waterPerAcre: 180 },
+        fungicide: { name: "Mancozeb 75% WP", perLiter: 2, unit: "g", waterPerAcre: 200 },
+        insecticide: { name: "Imidacloprid 17.8% SL", perLiter: 0.5, unit: "ml", waterPerAcre: 180 }
+      };
+
+      function calculateDosage() {
+        const crop = document.getElementById('calcCrop').value;
+        const acres = parseFloat(document.getElementById('calcAcres').value) || 1;
+        const sprayKey = document.getElementById('calcSpray').value;
+        const npk = CROP_NPK_PER_ACRE[crop];
+
+        const dapKg = (npk.p * acres) / 0.46;
+        const nFromDap = dapKg * 0.18;
+        const remainingN = Math.max(0, (npk.n * acres) - nFromDap);
+        const ureaKg = remainingN / 0.46;
+        const mopKg = (npk.k * acres) / 0.60;
+
+        document.getElementById('resUrea').textContent = `${ureaKg.toFixed(1)} kg`;
+        document.getElementById('resDap').textContent = `${dapKg.toFixed(1)} kg`;
+        document.getElementById('resMop').textContent = `${mopKg.toFixed(1)} kg`;
+
+        const spray = SPRAY_SPECS[sprayKey];
+        const totalWater = Math.round(spray.waterPerAcre * acres);
+        const tanksNeeded = Math.ceil(totalWater / 15);
+        const perTank = (spray.perLiter * 15).toFixed(1);
+        const totalChem = (spray.perLiter * totalWater).toFixed(0);
+
+        document.getElementById('resSprayBox').innerHTML = `
+          <p class="font-bold text-slate-900 dark:text-white">${spray.name}</p>
+          <p class="mt-1">• Mix <strong>${perTank} ${spray.unit}</strong> per <strong>15L tank</strong></p>
+          <p>• Total Water: <strong>${totalWater} L</strong> (~${tanksNeeded} tanks for ${acres} acre)</p>
+          <p>• Total Chemical Needed: <strong>${totalChem} ${spray.unit}</strong></p>
+        `;
+      }
+
+      const calcBtn = document.getElementById('calculateDosageBtn');
+      if (calcBtn) {
+        calcBtn.addEventListener('click', calculateDosage);
+        calculateDosage();
+      }
+
+      // ==========================================
+      // 8. SOIL HEALTH CARD & LEAFLET FIELD MAP
+      // ==========================================
+      let soilMap = null;
+      let soilMarker = null;
+      let selectedLat = 12.9716;
+      let selectedLng = 77.5946;
+
+      function initSoilMap() {
+        if (soilMap || typeof L === 'undefined') return;
+        soilMap = L.map('soilMap').setView([selectedLat, selectedLng], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap'
+        }).addTo(soilMap);
+
+        soilMarker = L.marker([selectedLat, selectedLng]).addTo(soilMap);
+        soilMap.on('click', (e) => {
+          selectedLat = e.latlng.lat;
+          selectedLng = e.latlng.lng;
+          soilMarker.setLatLng([selectedLat, selectedLng]);
+          document.getElementById('pinnedCoords').textContent = `Selected Coordinates: ${selectedLat.toFixed(4)}, ${selectedLng.toFixed(4)}`;
+        });
+      }
+
+      const soilForm = document.getElementById('soilCardForm');
+      if (soilForm) {
+        soilForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const ph = parseFloat(document.getElementById('soilPh').value);
+          const oc = parseFloat(document.getElementById('soilOc').value);
+          const n = parseFloat(document.getElementById('soilN').value);
+          const p = parseFloat(document.getElementById('soilP').value);
+          const k = parseFloat(document.getElementById('soilK').value);
+
+          let soilType = "Neutral (Ideal)", crops = "Rice, Wheat, Tomato, Sugarcane, Maize, Onion", amendment = "Soil pH is balanced. Maintain with organic compost.";
+          if (ph < 6.5) {
+            soilType = "Acidic Soil";
+            crops = "Arecanut, Coffee, Tea, Black Pepper, Potato, Ginger";
+            amendment = "Apply Agricultural Lime (200–300 kg/acre) to raise pH.";
+          } else if (ph > 7.5) {
+            soilType = "Alkaline Soil";
+            crops = "Cotton, Barley, Mustard, Sugarbeet, Pomegranate";
+            amendment = "Apply Gypsum (250–400 kg/acre) and green manure to lower pH.";
+          }
+
+          const ocStatus = oc < 0.5 ? "Low (Add 4–5 tonnes FYM/Vermicompost per acre)" : "Good";
+          const recBox = document.getElementById('soilRecommendation');
+          recBox.innerHTML = `
+            <p class="font-bold text-emerald-800 dark:text-emerald-300">✅ Soil Profile: ${soilType} (pH ${ph})</p>
+            <p><strong>Best Suited Crops:</strong> ${crops}</p>
+            <p><strong>Soil Amendment:</strong> ${amendment}</p>
+            <p><strong>Organic Carbon:</strong> ${ocStatus}</p>
+          `;
+          recBox.classList.remove('hidden');
+
+          try {
+            await fetch(`${API_BASE_URL}/soil-cards`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                field_name: document.getElementById('soilFieldName').value,
+                ph, nitrogen: n, phosphorus: p, potassium: k, organic_carbon: oc,
+                lat: selectedLat, lng: selectedLng
+              })
+            });
+          } catch (err) {}
+        });
+      }
+
+      // ==========================================
+      // 9. CONTRACT FARMING & DIRECT BUYER CONNECT
+      // ==========================================
+      const FALLBACK_LEADS = [
+        { buyer: "FreshBasket Retail Chain", buyer_type: "Retail Chain", crop: "Organic Tomatoes", quantity: "5 Tonnes", price_offer: "₹2,800 / Quintal", location: "Bengaluru, Karnataka", contact: "+91 99001 55667" },
+        { buyer: "Malnad Spice Exports", buyer_type: "Food Processor", crop: "Arecanut (Red / Chali)", quantity: "3 Tonnes", price_offer: "₹43,500 / Quintal", location: "Shivamogga, Karnataka", contact: "+91 94481 99887" },
+        { buyer: "Deccan Agro Foods", buyer_type: "Wholesaler", crop: "Red Onion (Grade A)", quantity: "12 Tonnes", price_offer: "₹3,400 / Quintal", location: "Pune, Maharashtra", contact: "+91 98230 22334" },
+        { buyer: "GreenLeaf Organic Kitchens", buyer_type: "Restaurant Chain", crop: "Basmati Paddy", quantity: "2 Tonnes", price_offer: "₹4,200 / Quintal", location: "Hyderabad, Telangana", contact: "+91 98490 66778" }
+      ];
+      let buyerLeadsList = [...FALLBACK_LEADS];
+
+      function renderBuyerLeads(list) {
+        const grid = document.getElementById('buyerLeadsGrid');
+        if (!grid) return;
+        grid.innerHTML = list.map(lead => `
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="px-2.5 py-1 text-xs font-bold bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-full">${lead.buyer_type}</span>
+                <span class="text-sm font-extrabold text-emerald-600">${lead.price_offer}</span>
+              </div>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white">Wanted: ${lead.crop}</h3>
+              <p class="text-xs font-semibold text-slate-600 dark:text-slate-300 mt-1">📦 Quantity: ${lead.quantity}</p>
+              <p class="text-xs text-slate-500 mt-1">📍 ${lead.location}</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">🏢 ${lead.buyer}</span>
+              <a href="tel:${lead.contact}" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg transition">Contact Buyer</a>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      async function loadBuyerLeads() {
+        try {
+          const res = await fetch(`${API_BASE_URL}/buyer-leads`, { cache: 'no-store' });
+          if (res.ok) {
+            const json = await res.json();
+            if (json.data && json.data.length > 0) buyerLeadsList = json.data;
+          }
+        } catch (e) {}
+        renderBuyerLeads(buyerLeadsList);
+      }
+
+      const buyerLeadForm = document.getElementById('buyerLeadForm');
+      if (buyerLeadForm) {
+        buyerLeadForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const payload = {
+            buyer: document.getElementById('leadBuyer').value,
+            buyer_type: document.getElementById('leadType').value,
+            crop: document.getElementById('leadCrop').value,
+            quantity: document.getElementById('leadQty').value,
+            price_offer: document.getElementById('leadPrice').value,
+            location: document.getElementById('leadLocation').value,
+            contact: document.getElementById('leadContact').value
+          };
+          buyerLeadsList.unshift(payload);
+          renderBuyerLeads(buyerLeadsList);
+          buyerLeadForm.reset();
+          try {
+            await fetch(`${API_BASE_URL}/buyer-leads`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+            });
+          } catch (err) {}
+        });
+      }
+      loadBuyerLeads();
+
+      // ==========================================
+      // 10. NATIVE LANGUAGE SWITCHER & VOICE ASSISTANT
+      // ==========================================
+      const TRANSLATIONS = {
+        "en-IN": {
+          nav: { home: "Home", crop: "Crops", disease: "Disease AI", weather: "Weather", market: "Market", equipment: "Rentals", calculator: "NPK Calc", soil: "Soil Map", buyers: "Buyers", about: "About" },
+          heroTitle: 'Smart Farming,<br><em class="not-italic text-brand-600 dark:text-brand-500 underline decoration-brand-300 decoration-4">Better Future.</em>',
+          listening: "🎙️ Listening... Say 'Weather', 'Market', 'Crops', or 'Rentals'",
+          responses: {
+            weather: "Opening live weather forecast.",
+            market: "Opening daily Mandi market prices.",
+            crop: "Opening Indian crops directory.",
+            disease: "Opening AI leaf disease scanner.",
+            equipment: "Opening tractor and machinery rentals.",
+            calculator: "Opening fertilizer NPK calculator.",
+            soil: "Opening soil health card and field map.",
+            buyers: "Opening direct buyer connect board.",
+            home: "Returning to home page.",
+            unknown: "Sorry, I did not understand. Try saying Weather, Market, Crops, or Rentals."
+          }
+        },
+        "kn-IN": {
+          nav: { home: "ಮುಖಪುಟ", crop: "ಬೆಳೆಗಳು", disease: "ರೋಗ ಪತ್ತೆ", weather: "ಹವಾಮಾನ", market: "ಮಾರುಕಟ್ಟೆ", equipment: "ಬಾಡಿಗೆ", calculator: "ಗೊಬ್ಬರ", soil: "ಮಣ್ಣು", buyers: "ಖರೀದಿದಾರರು", about: "ನಮ್ಮ ಬಗ್ಗೆ" },
+          heroTitle: 'ಸ್ಮಾರ್ಟ್ ಕೃಷಿ,<br><em class="not-italic text-brand-600 dark:text-brand-500 underline decoration-brand-300 decoration-4">ಉತ್ತಮ ಭವಿಷ್ಯ.</em>',
+          listening: "🎙️ ಕೇಳಿಸಿಕೊಳ್ಳುತ್ತಿದೆ... 'ಹವಾಮಾನ', 'ಮಾರುಕಟ್ಟೆ', ಅಥವಾ 'ಬೆಳೆಗಳು' ಎಂದು ಹೇಳಿ",
+          responses: {
+            weather: "ಹವಾಮಾನ ಮುನ್ಸೂಚನೆ ತೆರೆಯಲಾಗುತ್ತಿದೆ.",
+            market: "ದೈನಂದಿನ ಮಂಡಿ ಮಾರುಕಟ್ಟೆ ದರಗಳನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ.",
+            crop: "ಭಾರತೀಯ ಬೆಳೆಗಳ ಮಾಹಿತಿಯನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ.",
+            disease: "ಎಲೆ ರೋಗ ಪತ್ತೆ ಸ್ಕ್ಯಾನರ್ ತೆರೆಯಲಾಗುತ್ತಿದೆ.",
+            equipment: "ಟ್ರ್ಯಾಕ್ಟರ್ ಮತ್ತು ಯಂತ್ರೋಪಕರಣಗಳ ಬಾಡಿಗೆ ತೆರೆಯಲಾಗುತ್ತಿದೆ.",
+            calculator: "ರಸಗೊಬ್ಬರ ಲೆಕ್ಕಾಚಾರ ತೆರೆಯಲಾಗುತ್ತಿದೆ.",
+            soil: "ಮಣ್ಣಿನ ಆರೋಗ್ಯ ಕಾರ್ಡ್ ತೆರೆಯಲಾಗುತ್ತಿದೆ.",
+            buyers: "ನೇರ ಖರೀದಿದಾರರ ಪಟ್ಟಿ ತೆರೆಯಲಾಗುತ್ತಿದೆ.",
+            home: "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಲಾಗುತ್ತಿದೆ.",
+            unknown: "ಕ್ಷಮಿಸಿ, ಅರ್ಥವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಹವಾಮಾನ, ಮಾರುಕಟ್ಟೆ, ಅಥವಾ ಬೆಳೆಗಳು ಎಂದು ಹೇಳಿ."
+          }
+        },
+        "hi-IN": {
+          nav: { home: "होम", crop: "फसलें", disease: "रोग जांच", weather: "मौसम", market: "मंडी भाव", equipment: "किराया", calculator: "खाद गणना", soil: "मिट्टी", buyers: "खरीदार", about: "जानकारी" },
+          heroTitle: 'स्मार्ट खेती,<br><em class="not-italic text-brand-600 dark:text-brand-500 underline decoration-brand-300 decoration-4">बेहतर भविष्य.</em>',
+          listening: "🎙️ सुन रहा हूँ... 'मौसम', 'मंडी भाव', 'फसलें', या 'किराया' बोलें",
+          responses: {
+            weather: "लाइव मौसम पूर्वानुमान खोला जा रहा है।",
+            market: "दैनिक मंडी भाव खोले जा रहे हैं।",
+            crop: "भारतीय फसलों की जानकारी खोली जा रही है।",
+            disease: "पत्ती रोग जांच स्कैनर खोला जा रहा है।",
+            equipment: "ट्रैक्टर और मशीनरी किराया खोला जा रहा है।",
+            calculator: "खाद और छिड़काव कैलकुलेटर खोला जा रहा है।",
+            soil: "मृदा स्वास्थ्य कार्ड और मैप खोला जा रहा है।",
+            buyers: "सीधे खरीदार बोर्ड खोला जा रहा है।",
+            home: "होम पेज पर वापस जा रहे हैं।",
+            unknown: "क्षमा करें, समझ नहीं आया। कृपया मौसम, मंडी भाव, या फसलें बोलें।"
+          }
+        },
+        "te-IN": {
+          nav: { home: "హోమ్", crop: "పంటలు", disease: "వ్యాధి నిర్ధారణ", weather: "వాతావరణం", market: "మార్కెట్", equipment: "అద్దె", calculator: "ఎరువులు", soil: "నేల", buyers: "కొనుగోలుదారులు", about: "గురించి" },
+          heroTitle: 'స్మార్ట్ వ్యవసాయం,<br><em class="not-italic text-brand-600 dark:text-brand-500 underline decoration-brand-300 decoration-4">మెరుగైన భవిష్యత్తు.</em>',
+          listening: "🎙️ వింటున్నాను... 'వాతావరణం', 'మార్కెట్', లేదా 'పంటలు' అని చెప్పండి",
+          responses: {
+            weather: "వాతావరణ వివరాలు తెరుస్తున్నాము.",
+            market: "రోజువారీ మార్కెట్ ధరలు తెరుస్తున్నాము.",
+            crop: "పంటల సమాచారం తెరుస్తున్నాము.",
+            disease: "ఆకు వ్యాధి స్కానర్ తెరుస్తున్నాము.",
+            equipment: "ట్రాక్టర్ మరియు యంత్రాల అద్దె తెరుస్తున్నాము.",
+            calculator: "ఎరువుల కాలిక్యులేటర్ తెరుస్తున్నాము.",
+            soil: "నేల ఆరోగ్య కార్డు తెరుస్తున్నాము.",
+            buyers: "నేరుగా కొనుగోలుదారుల బోర్డు తెరుస్తున్నాము.",
+            home: "హోమ్ పేజీకి వెళ్తున్నాము.",
+            unknown: "క్షమించండి, అర్థం కాలేదు. వాతావరణం, మార్కెట్, లేదా పంటలు అని చెప్పండి."
+          }
+        },
+        "ta-IN": {
+          nav: { home: "முகப்பு", crop: "பயிர்கள்", disease: "நோய் கண்டறிதல்", weather: "வானிலை", market: "சந்தை விலை", equipment: "வாடகை", calculator: "உரம்", soil: "மண்", buyers: "வாங்குபவர்கள்", about: "பற்றி" },
+          heroTitle: 'ஸ்மார்ட் விவசாயம்,<br><em class="not-italic text-brand-600 dark:text-brand-500 underline decoration-brand-300 decoration-4">சிறந்த எதிர்காலம்.</em>',
+          listening: "🎙️ கேட்கிறது... 'வானிலை', 'சந்தை', அல்லது 'பயிர்கள்' என்று சொல்லுங்கள்",
+          responses: {
+            weather: "வானிலை அறிக்கை திறக்கப்படுகிறது.",
+            market: "தினசரி சந்தை விலைகள் திறக்கப்படுகின்றன.",
+            crop: "பயிர் விவரங்கள் திறக்கப்படுகின்றன.",
+            disease: "இலை நோய் கண்டறிதல் திறக்கப்படுகிறது.",
+            equipment: "டிராக்டர் வாடகை திறக்கப்படுகிறது.",
+            calculator: "உர அளவு கணிப்பான் திறக்கப்படுகிறது.",
+            soil: "மண் வள அட்டை திறக்கப்படுகிறது.",
+            buyers: "நேரடி வாங்குபவர்கள் பக்கம் திறக்கப்படுகிறது.",
+            home: "முகப்பு பக்கத்திற்கு செல்கிறது.",
+            unknown: "மன்னிக்கவும், புரியவில்லை. வானிலை, சந்தை, அல்லது பயிர்கள் என்று சொல்லுங்கள்."
+          }
+        },
+        "mr-IN": {
+          nav: { home: "मुख्यपृष्ठ", crop: "पिके", disease: "रोग तपासणी", weather: "हवामान", market: "बाजारभाव", equipment: "भाडे", calculator: "खत गणना", soil: "माती", buyers: "खरेदीदार", about: "माहिती" },
+          heroTitle: 'स्मार्ट शेती,<br><em class="not-italic text-brand-600 dark:text-brand-500 underline decoration-brand-300 decoration-4">उत्तम भविष्य.</em>',
+          listening: "🎙️ ऐकत आहे... 'हवामान', 'बाजारभाव', किंवा 'पिके' बोला",
+          responses: {
+            weather: "हवामान अंदाज उघडत आहे.",
+            market: "दैनिक बाजारभाव उघडत आहे.",
+            crop: "पिकांची माहिती उघडत आहे.",
+            disease: "पानांचे रोग निदान उघडत आहे.",
+            equipment: "ट्रॅक्टर आणि अवजारे भाडे उघडत आहे.",
+            calculator: "खत मात्रा कॅल्क्युलेटर उघडत आहे.",
+            soil: "माती आरोग्य पत्रिका उघडत आहे.",
+            buyers: "थेट खरेदीदार बोर्ड उघडत आहे.",
+            home: "मुख्यपृष्ठावर जात आहे.",
+            unknown: "क्षमस्व, समजले नाही. कृपया हवामान, बाजारभाव, किंवा पिके बोला."
+          }
+        }
+      };
+
+      let currentLang = localStorage.getItem('agritech_lang') || 'en-IN';
+      const langSelector = document.getElementById('langSelector');
+
+      function applyLanguage(lang) {
+        currentLang = TRANSLATIONS[lang] ? lang : 'en-IN';
+        localStorage.setItem('agritech_lang', currentLang);
+        if (langSelector) langSelector.value = currentLang;
+
+        const t = TRANSLATIONS[currentLang];
+        document.querySelectorAll('header nav a.nav-link').forEach(link => {
+          const key = link.getAttribute('data-target');
+          if (t.nav[key]) link.textContent = t.nav[key];
+        });
+
+        const heroH1 = document.querySelector('#page-home h1');
+        if (heroH1 && t.heroTitle) heroH1.innerHTML = t.heroTitle;
+      }
+
+      if (langSelector) {
+        langSelector.addEventListener('change', (e) => applyLanguage(e.target.value));
+      }
+      applyLanguage(currentLang);
+
+      function speakText(text) {
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = currentLang;
+        utterance.rate = 0.95;
+        window.speechSynthesis.speak(utterance);
+      }
+
+      const voiceBtn = document.getElementById('voiceAssistantBtn');
+      const voiceBubble = document.getElementById('voiceStatusBubble');
+      const voiceText = document.getElementById('voiceStatusText');
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      function handleVoiceCommand(transcript) {
+        const text = transcript.toLowerCase();
+        const r = TRANSLATIONS[currentLang].responses;
+
+        if (/weather|rain|temperature|ಹವಾಮಾನ|ಮಳೆ|मौसम|बारिश|వాతావరణం|வானிலை|हवामान/.test(text)) {
+          navigateToPage('weather'); speakText(r.weather);
+        } else if (/market|price|mandi|rate|ಮಾರುಕಟ್ಟೆ|ದರ|ಬೆಲೆ|मंडी|भाव|मार्केट|ధర|சந்தை|விலை|बाजारभाव/.test(text)) {
+          navigateToPage('market'); speakText(r.market);
+        } else if (/crop|arecanut|rice|wheat|tomato|onion|ಬೆಳೆ|ಅಡಿಕೆ|फसल|పంట|பயிர்|पिके/.test(text)) {
+          navigateToPage('crop'); speakText(r.crop);
+        } else if (/disease|leaf|scan|camera|ರೋಗ|ಎಲೆ|रोग|पत्ती|వ్యాధి|நோய்|இலை/.test(text)) {
+          navigateToPage('disease'); speakText(r.disease);
+        } else if (/tractor|rent|equipment|machinery|ಟ್ರ್ಯಾಕ್ಟರ್|ಬಾಡಿಗೆ|ट्रैक्टर|किराया|ట్రాక్టర్|அద్దె|டிராக்டர்|वाடகை|भाडे/.test(text)) {
+          navigateToPage('equipment'); speakText(r.equipment);
+        } else if (/fertilizer|urea|dap|npk|spray|ಗೊಬ್ಬರ|खाद|यूरिया|ఎరువు|உரம்|खत/.test(text)) {
+          navigateToPage('calculator'); speakText(r.calculator);
+        } else if (/soil|map|ph|ಮಣ್ಣು|मिट्टी|నేల|மண்|माती/.test(text)) {
+          navigateToPage('soil'); speakText(r.soil);
+        } else if (/buyer|sell|contract|ಖರೀದಿದಾರ|खरीदार|కొనుగోలు|வாங்கு|खरेदीदार/.test(text)) {
+          navigateToPage('buyers'); speakText(r.buyers);
+        } else if (/home|ಮುಖಪುಟ|होम|హోమ్|முகப்பு|मुख्यपृष्ठ/.test(text)) {
+          navigateToPage('home'); speakText(r.home);
+        } else {
+          speakText(r.unknown);
+        }
+      }
+
+      if (voiceBtn) {
+        if (!SpeechRecognition) {
+          voiceBtn.addEventListener('click', () => {
+            alert("Voice recognition is best supported in Chrome, Edge, or Brave browsers.");
+          });
+        } else {
+          const recognition = new SpeechRecognition();
+          recognition.interimResults = false;
+          recognition.maxAlternatives = 1;
+
+          voiceBtn.addEventListener('click', () => {
+            recognition.lang = currentLang;
+            voiceBubble.classList.remove('hidden');
+            voiceText.textContent = TRANSLATIONS[currentLang].listening;
+            voiceBtn.classList.add('animate-pulse', 'bg-red-600');
+            recognition.start();
+          });
+
+          recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            voiceText.textContent = `🗣️ "${transcript}"`;
+            handleVoiceCommand(transcript);
+            setTimeout(() => voiceBubble.classList.add('hidden'), 3500);
+          };
+
+          recognition.onerror = () => {
+            voiceText.textContent = "Could not hear clearly. Tap 🎙️ to try again.";
+            setTimeout(() => voiceBubble.classList.add('hidden'), 2500);
+          };
+
+          recognition.onend = () => {
+            voiceBtn.classList.remove('animate-pulse', 'bg-red-600');
+          };
+        }
+      }
     });
   </script>
 </body>
