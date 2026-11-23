@@ -221,7 +221,7 @@
           <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">📋 Core Features</h2>
           <ul class="space-y-3 text-slate-600 dark:text-slate-300">
             <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Installable mobile-ready web application with dark mode support.</li>
-            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Searchable All-India crop directory with season and soil guidance.</li>
+            <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Searchable All-India crop directory synced with daily market commodities.</li>
             <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Camera and gallery-based plant leaf scanning and AI disease detection.</li>
             <li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">✓</span> Real-time city weather forecasts and daily Mandi market rates.</li>
           </ul>
@@ -240,7 +240,7 @@
 
         <!-- Search Bar -->
         <div class="mb-6 max-w-xl mx-auto">
-          <input type="text" id="cropSearchInput" onkeyup="filterCropDirectory()" placeholder="🔍 Search crops (e.g., Rice, Wheat, Haldi, Cotton, Tomato)..." class="w-full px-4 py-3.5 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none transition shadow-sm">
+          <input type="text" id="cropSearchInput" onkeyup="filterCropDirectory()" placeholder="🔍 Search crops (e.g., Arecanut, Rice, Wheat, Haldi, Cotton, Tomato)..." class="w-full px-4 py-3.5 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none transition shadow-sm">
         </div>
 
         <!-- Category Filter Pills -->
@@ -389,7 +389,7 @@
         </div>
 
         <div class="mb-6 max-w-md mx-auto">
-          <input type="text" id="marketSearchInput" onkeyup="filterMarketTable()" placeholder="🔍 Search any crop or state instantly..." class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none transition shadow-sm">
+          <input type="text" id="marketSearchInput" onkeyup="filterMarketTable()" placeholder="🔍 Search any crop or state (e.g., Arecanut, Onion, Karnataka)..." class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none transition shadow-sm">
         </div>
 
         <div class="overflow-x-auto bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
@@ -468,7 +468,7 @@
       }
 
       // ==========================================
-      // 2. INDIAN CROPS DIRECTORY (40 MAJOR CROPS)
+      // 2. INDIAN CROPS DIRECTORY (AUTO-SYNCED WITH MARKET)
       // ==========================================
       const FALLBACK_CROPS = [
         // Cereals & Millets
@@ -493,6 +493,7 @@
         { name: "Sesame (Til)", keywords: "sesame til gingelly oilseed", category: "oilseed", season: "KHARIF • OILSEED", emoji: "🌱", climate: "Warm (25°C–30°C)", soil: "Well-drained light sandy loams.", color: "emerald" },
         { name: "Castor (Arandi)", keywords: "castor arandi oilseed", category: "oilseed", season: "KHARIF • OILSEED", emoji: "🌿", climate: "Warm & Dry (20°C–30°C)", soil: "Deep sandy loam and red soils.", color: "emerald" },
         // Commercial & Cash Crops
+        { name: "Arecanut (Supari / Betelnut)", keywords: "arecanut betelnut supari adike commercial plantation", category: "commercial", season: "PERENNIAL • PLANTATION", emoji: "🌴", climate: "Warm & Humid (14°C–36°C)", soil: "Well-drained gravelly laterite and red clay loam soils.", color: "purple" },
         { name: "Cotton (Kapas)", keywords: "cotton kapas commercial", category: "commercial", season: "KHARIF • COMMERCIAL", emoji: "☁️", climate: "High Temp (21°C–30°C)", soil: "Black cotton soil (Regur) of Deccan.", color: "purple" },
         { name: "Sugarcane (Ganna)", keywords: "sugarcane ganna commercial", category: "commercial", season: "ANNUAL • COMMERCIAL", emoji: "🎋", climate: "Hot & Humid (20°C–35°C)", soil: "Deep rich loamy soils with high moisture.", color: "purple" },
         { name: "Jute (Pat)", keywords: "jute pat golden fibre commercial", category: "commercial", season: "KHARIF • COMMERCIAL", emoji: "🌾", climate: "Hot & Wet (24°C–37°C)", soil: "New alluvial soil of river deltas.", color: "purple" },
@@ -519,6 +520,66 @@
         { name: "Coconut (Nariyal)", keywords: "coconut nariyal plantation horticulture", category: "horticulture", season: "PERENNIAL • HORTICULTURE", emoji: "🥥", climate: "Coastal Humid (25°C–32°C)", soil: "Coastal sandy, alluvial, and red loamy soils.", color: "blue" }
       ];
 
+      let allCropsList = [...FALLBACK_CROPS];
+      let latestMarketPrices = [];
+
+      function classifyMarketCrop(commodityName, modalPrice) {
+        const lower = commodityName.toLowerCase();
+        if (/rice|paddy|wheat|maize|jowar|bajra|ragi|barley|millet|oats/.test(lower)) {
+          return { name: commodityName, keywords: lower + " cereal grain", category: "cereal", season: "MARKET • CEREAL", emoji: "🌾", climate: "Warm to Moderate Indian Climate", soil: "Well-drained fertile alluvial or loamy soils.", color: "emerald", price: modalPrice };
+        }
+        if (/gram|dal|tur|arhar|moong|urad|masoor|lentil|pea|bean|cowpea|kabuli/.test(lower)) {
+          return { name: commodityName, keywords: lower + " pulse dal", category: "pulse", season: "MARKET • PULSE", emoji: "🫘", climate: "Warm & Dry to Moderate Climate", soil: "Well-drained sandy loam to clay loam soils.", color: "amber", price: modalPrice };
+        }
+        if (/groundnut|soyabean|soybean|mustard|sunflower|sesame|til|castor|linseed|copra|oil/.test(lower)) {
+          return { name: commodityName, keywords: lower + " oilseed", category: "oilseed", season: "MARKET • OILSEED", emoji: "🌻", climate: "Warm Sunny Climate (20°C–32°C)", soil: "Well-drained light loamy or black soils.", color: "amber", price: modalPrice };
+        }
+        if (/arecanut|betelnut|supari|cotton|sugarcane|jute|rubber|tobacco|guar/.test(lower)) {
+          return { name: commodityName, keywords: lower + " commercial cash crop plantation", category: "commercial", season: "MARKET • COMMERCIAL", emoji: "🌴", climate: "Tropical to Sub-tropical Warm Climate", soil: "Deep, fertile, well-drained loamy or black soils.", color: "purple", price: modalPrice };
+        }
+        if (/chilli|turmeric|ginger|garlic|coriander|cumin|jeera|pepper|cardamom|clove|fennel|methi|ajwain|tamarind|tea|coffee/.test(lower)) {
+          return { name: commodityName, keywords: lower + " spice masala", category: "spice", season: "MARKET • SPICE", emoji: "🌶️", climate: "Warm & Humid to Moderate Climate", soil: "Friable, humus-rich well-drained loamy soils.", color: "rose", price: modalPrice };
+        }
+        return { name: commodityName, keywords: lower + " vegetable fruit horticulture", category: "horticulture", season: "MARKET • HORTICULTURE", emoji: "🥬", climate: "Moderate to Warm Indian Climate", soil: "Rich, well-drained sandy loam with organic matter.", color: "blue", price: modalPrice };
+      }
+
+      function syncMarketCropsToDirectory(marketPrices) {
+        if (!marketPrices || marketPrices.length === 0) return;
+        latestMarketPrices = marketPrices;
+
+        let updated = false;
+        const seen = new Set();
+
+        marketPrices.forEach(item => {
+          const rawName = (item.commodity || '').trim();
+          if (!rawName || rawName === 'N/A') return;
+
+          const baseName = rawName.split('(')[0].trim().toLowerCase();
+          if (seen.has(baseName)) return;
+          seen.add(baseName);
+
+          const existing = allCropsList.find(c =>
+            c.name.toLowerCase().includes(baseName) ||
+            (c.keywords && c.keywords.toLowerCase().includes(baseName))
+          );
+
+          if (existing) {
+            if (!existing.price && item.modal_price && item.modal_price !== '--') {
+              existing.price = item.modal_price;
+              updated = true;
+            }
+          } else {
+            allCropsList.push(classifyMarketCrop(rawName, item.modal_price));
+            updated = true;
+          }
+        });
+
+        if (updated) {
+          renderCrops(allCropsList);
+          window.applyFilters();
+        }
+      }
+
       function renderCrops(cropsList) {
         const grid = document.getElementById('cropsGrid');
         if (!grid) return;
@@ -532,6 +593,7 @@
             <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">${crop.name}</h3>
             <p class="text-xs font-medium text-${crop.color}-600 dark:text-${crop.color}-400 mb-3">${crop.climate}</p>
             <p class="text-sm text-slate-600 dark:text-slate-300"><strong class="text-slate-900 dark:text-white">Soil:</strong> ${crop.soil}</p>
+            ${crop.price ? `<p class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700 text-xs font-bold text-emerald-600 dark:text-emerald-400">📈 Live Mandi Rate: ₹${crop.price}/Qtl</p>` : ''}
           </div>
         `).join('');
       }
@@ -541,9 +603,21 @@
           const response = await fetch(`${API_BASE_URL}/crops`, { cache: 'no-store' });
           if (!response.ok) throw new Error('API unavailable');
           const result = await response.json();
-          renderCrops(result.data && result.data.length > 0 ? result.data : FALLBACK_CROPS);
+          if (result.data && result.data.length > 0) {
+            allCropsList = [...result.data];
+            // Ensure Arecanut is always included even if backend has older seed data
+            const hasArecanut = allCropsList.some(c => c.name.toLowerCase().includes('arecanut'));
+            if (!hasArecanut) {
+              const arecanutCrop = FALLBACK_CROPS.find(c => c.name.toLowerCase().includes('arecanut'));
+              if (arecanutCrop) allCropsList.unshift(arecanutCrop);
+            }
+          }
         } catch (err) {
-          renderCrops(FALLBACK_CROPS);
+          allCropsList = [...FALLBACK_CROPS];
+        }
+        renderCrops(allCropsList);
+        if (latestMarketPrices.length > 0) {
+          syncMarketCropsToDirectory(latestMarketPrices);
         }
       }
 
@@ -807,9 +881,10 @@
       getWeatherData("Bengaluru");
 
       // ==========================================
-      // 5. LIVE DAILY MARKET PRICES (UP TO 500 RECORDS)
+      // 5. LIVE DAILY MARKET PRICES (500+ RECORDS + ARECANUT)
       // ==========================================
       const FALLBACK_PRICES = [
+        { commodity: "Arecanut (Betelnut/Supari)", variety: "Red / Chali", market: "Shivamogga, Karnataka", min_price: "36,000", max_price: "46,500", modal_price: "42,000", arrival_date: "Today" },
         { commodity: "Paddy (Common)", variety: "Grade A", market: "Karnal, Haryana", min_price: "2,440", max_price: "2,480", modal_price: "2,460", arrival_date: "Today" },
         { commodity: "Wheat", variety: "Sharbati", market: "Indore, Madhya Pradesh", min_price: "2,585", max_price: "2,650", modal_price: "2,610", arrival_date: "Today" },
         { commodity: "Onion", variety: "Red", market: "Lasalgaon, Maharashtra", min_price: "2,400", max_price: "3,850", modal_price: "3,200", arrival_date: "Today" },
@@ -836,6 +911,9 @@
             </td>
           </tr>
         `).join('');
+
+        // Automatically sync all Market commodities into Crop Info
+        syncMarketCropsToDirectory(prices);
       }
 
       async function loadMarketPrices() {
@@ -850,7 +928,9 @@
           if (response.ok) {
             const result = await response.json();
             if (result.data && result.data.length > 0) {
-              renderMarketPrices(result.data);
+              const hasArecanut = result.data.some(r => (r.commodity || '').toLowerCase().includes('arecanut'));
+              const finalData = hasArecanut ? result.data : [FALLBACK_PRICES[0], ...result.data];
+              renderMarketPrices(finalData);
               return;
             }
           }
@@ -858,14 +938,22 @@
           // Proceed to direct live fetch
         }
 
-        // 2. Direct live fetch from data.gov.in (works even when backend is asleep)
+        // 2. Direct live fetch from data.gov.in (General 500 + Arecanut guaranteed)
         try {
-          const directUrl = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${DATA_GOV_API_KEY}&format=json&limit=500`;
-          const directRes = await fetch(directUrl, { cache: 'no-store' });
-          if (!directRes.ok) throw new Error('Direct API error');
+          const generalUrl = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${DATA_GOV_API_KEY}&format=json&limit=500`;
+          const arecanutUrl = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${DATA_GOV_API_KEY}&format=json&limit=20&filters[commodity]=Arecanut(Betelnut/Supari)`;
 
-          const directData = await directRes.json();
-          const records = (directData.records || []).map(item => ({
+          const [generalRes, arecanutRes] = await Promise.all([
+            fetch(generalUrl, { cache: 'no-store' }),
+            fetch(arecanutUrl, { cache: 'no-store' })
+          ]);
+
+          const generalData = generalRes.ok ? await generalRes.json() : { records: [] };
+          const arecanutData = arecanutRes.ok ? await arecanutRes.json() : { records: [] };
+
+          const combined = [...(arecanutData.records || []), ...(generalData.records || [])];
+
+          const records = combined.map(item => ({
             commodity: item.commodity || 'N/A',
             variety: item.variety || '',
             market: `${item.market || ''}, ${item.state || ''}`,
